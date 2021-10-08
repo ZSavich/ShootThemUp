@@ -3,6 +3,7 @@
 
 #include "Player/STUBaseCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
 ASTUBaseCharacter::ASTUBaseCharacter()
@@ -10,8 +11,12 @@ ASTUBaseCharacter::ASTUBaseCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+    CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+    CameraBoom->SetupAttachment(GetRootComponent());
+    CameraBoom->bUsePawnControlRotation = true;
+    
     FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraFollow"));
-    FollowCamera->SetupAttachment(GetRootComponent());
+    FollowCamera->SetupAttachment(CameraBoom);
 }
 
 // Called when the game starts or when spawned
@@ -35,7 +40,9 @@ void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
     if(PlayerInputComponent)
     {
         PlayerInputComponent->BindAxis("MoveForward", this, &ASTUBaseCharacter::MoveForward);   
-        PlayerInputComponent->BindAxis("MoveRight", this, &ASTUBaseCharacter::MoveRight);   
+        PlayerInputComponent->BindAxis("MoveRight", this, &ASTUBaseCharacter::MoveRight);
+        PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+        PlayerInputComponent->BindAxis("TurnAround", this, &APawn::AddControllerYawInput);
     }
 }
 
