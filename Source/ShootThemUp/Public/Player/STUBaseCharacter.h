@@ -10,7 +10,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class USTUHealthComponent;
 class UTextRenderComponent;
-class ASTUBaseWeapon;
+class USTUWeaponComponent;
 
 UENUM(BlueprintType)
 enum class EMovementStatus : uint8
@@ -49,6 +49,9 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UTextRenderComponent* HealthRenderText;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Conponents")
+    USTUWeaponComponent* WeaponComponent;
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
     EMovementStatus MovementStatus;
@@ -71,9 +74,6 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Death")
     float LifeSpan;
     
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipment")
-    TSubclassOf<ASTUBaseWeapon> EquippedWeapon;
-    
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -92,5 +92,5 @@ private:
     void OnDeath();
     void OnHealthChanged(const float Health);
 
-    void SpawnWeapon() const;
+    
 };
