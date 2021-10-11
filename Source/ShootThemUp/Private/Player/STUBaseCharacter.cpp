@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "Weapon/STUBaseWeapon.h"
 
 // Sets default values
 ASTUBaseCharacter::ASTUBaseCharacter()
@@ -17,6 +18,8 @@ ASTUBaseCharacter::ASTUBaseCharacter()
     CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
     CameraBoom->SetupAttachment(GetRootComponent());
     CameraBoom->bUsePawnControlRotation = true;
+    CameraBoom->TargetArmLength = 300.f;
+    CameraBoom->SocketOffset = FVector(0.f, 70.f, 200.f);
     
     FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraFollow"));
     FollowCamera->SetupAttachment(CameraBoom);
@@ -25,6 +28,10 @@ ASTUBaseCharacter::ASTUBaseCharacter()
 
     HealthRenderText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("HealthTextRender"));
     HealthRenderText->SetupAttachment(GetRootComponent());
+    HealthRenderText->SetOwnerNoSee(true);
+    HealthRenderText->SetRelativeRotation(FRotator(0.f,180.f,0.f));
+    HealthRenderText->SetRelativeLocation(FVector(0.f,0.f,100.f));
+    HealthRenderText->HorizontalAlignment = EHorizTextAligment::EHTA_Center;
 
     WalkSpeed = 600.f;
     SprintSpeed = 900.f;
@@ -48,7 +55,9 @@ void ASTUBaseCharacter::BeginPlay()
     OnHealthChanged(HealthComponent->GetHealth());
     HealthComponent->OnDeath.AddUObject(this, &ASTUBaseCharacter::OnDeath);
     HealthComponent->OnHealthChanged.AddUObject(this, &ASTUBaseCharacter::OnHealthChanged);
-    LandedDelegate.AddDynamic(this, &ASTUBaseCharacter::OnGroundLended);
+    LandedDelegate.AddDynamic(this, &ASTUBaseCharacter::OnGroundLanded);
+
+    SpawnWeapon();
 }
 
 // Called every frame
@@ -144,7 +153,7 @@ void ASTUBaseCharacter::OnHealthChanged(const float Health)
     HealthRenderText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
 
-void ASTUBaseCharacter::OnGroundLended(const FHitResult& HitResult)
+void ASTUBaseCharacter::OnGroundLanded(const FHitResult& HitResult)
 {
     const auto LandedVelocityZ = -GetVelocity().Z;
     
@@ -153,4 +162,16 @@ void ASTUBaseCharacter::OnGroundLended(const FHitResult& HitResult)
     const auto FinalLandedDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity,
         LandedDamage, LandedVelocityZ);
     TakeDamage(FinalLandedDamage, FDamageEvent{},nullptr, nullptr);
+}
+
+
+void ASTUBaseCharacter::SpawnWeapon() const
+{
+    if(!GetWorld() || !EquippedWeapon) return;
+
+    const auto Weapon = GetWorld()->SpawnActor<ASTUBaseWeapon>(EquippedWeapon);
+    
+    if(!Weapon) return;
+    const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
+    Weapon->AttachToComponent(GetMesh(), AttachmentRules, "WeaponSocket");
 }
