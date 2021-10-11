@@ -22,16 +22,16 @@ public:
     UBillboardComponent* BillboardComp;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sphere")
-    float Radius = 300.f;
+    float Radius;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sphere")
-    FLinearColor SphereColor = FLinearColor::Blue;
+    FLinearColor SphereColor;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
-    float Damage = 1.f;
+    float Damage;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
-    bool bDoFullDamage = false;
+    bool bDoFullDamage;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
     TSubclassOf<UDamageType> DamageType;  

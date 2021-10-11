@@ -18,6 +18,12 @@ ASTUDevDamageActor::ASTUDevDamageActor()
     
     BillboardComp = CreateDefaultSubobject<UBillboardComponent>(TEXT("BillboardComponent"));
     BillboardComp->SetupAttachment(GetRootComponent());
+
+    SphereColor = FLinearColor::Blue;
+    
+    Radius = 300.f;
+    Damage = 1.f;
+    bDoFullDamage = false;
 }
 
 // Called when the game starts or when spawned

@@ -27,9 +27,15 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	ASTUBaseCharacter();
+    
+    virtual void Tick(float DeltaTime) override;
+    
+    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+    UFUNCTION(BlueprintPure)
+    float GetMovementDirection() const;
+    
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USpringArmComponent* CameraBoom;
@@ -38,7 +44,7 @@ protected:
     UCameraComponent* FollowCamera;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-    USTUHealthComponent* HealthComponent;
+    USTUHealthComponent*  HealthComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UTextRenderComponent* HealthRenderText;
@@ -46,8 +52,11 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
     EMovementStatus MovementStatus;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Animations")
-    UAnimMontage* DeathMontage;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
+    FVector2D LandedDamageVelocity; 
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
+    FVector2D LandedDamage;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float WalkSpeed;
@@ -55,18 +64,14 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float SprintSpeed;
     
+    UPROPERTY(EditDefaultsOnly, Category = "Animations")
+    UAnimMontage* DeathMontage;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Death")
+    float LifeSpan;
+    
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-    UFUNCTION(BlueprintPure)
-    float GetMovementDirection() const;
 
 private:
     void MoveForward(float Amount);
@@ -79,4 +84,7 @@ private:
 
     void OnDeath();
     void OnHealthChanged(const float Health);
+
+    UFUNCTION()
+    void OnGroundLended(const FHitResult& HitResult);
 };

@@ -2,10 +2,10 @@
 
 
 #include "Player/STUBaseCharacter.h"
+#include "Components/STUHealthComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Components/STUHealthComponent.h"
 #include "Components/TextRenderComponent.h"
 
 // Sets default values
@@ -28,6 +28,11 @@ ASTUBaseCharacter::ASTUBaseCharacter()
 
     WalkSpeed = 600.f;
     SprintSpeed = 900.f;
+
+    LandedDamageVelocity = FVector2D(900.f, 1600.f);
+    LandedDamage = FVector2D(10.f, 100.f);
+
+    LifeSpan = 5.f;
 }
 
 // Called when the game starts or when spawned
@@ -43,6 +48,7 @@ void ASTUBaseCharacter::BeginPlay()
     OnHealthChanged(HealthComponent->GetHealth());
     HealthComponent->OnDeath.AddUObject(this, &ASTUBaseCharacter::OnDeath);
     HealthComponent->OnHealthChanged.AddUObject(this, &ASTUBaseCharacter::OnHealthChanged);
+    LandedDelegate.AddDynamic(this, &ASTUBaseCharacter::OnGroundLended);
 }
 
 // Called every frame
@@ -55,17 +61,16 @@ void ASTUBaseCharacter::Tick(float DeltaTime)
 void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-    if(PlayerInputComponent)
-    {
-        PlayerInputComponent->BindAxis("MoveForward", this, &ASTUBaseCharacter::MoveForward);   
-        PlayerInputComponent->BindAxis("MoveRight", this, &ASTUBaseCharacter::MoveRight);
-        PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-        PlayerInputComponent->BindAxis("TurnAround", this, &APawn::AddControllerYawInput);
-        
-        PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-        PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ASTUBaseCharacter::Sprint);
-        PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ASTUBaseCharacter::StopSprinting);
-    }
+    check(PlayerInputComponent)
+    
+    PlayerInputComponent->BindAxis("MoveForward", this, &ASTUBaseCharacter::MoveForward);   
+    PlayerInputComponent->BindAxis("MoveRight", this, &ASTUBaseCharacter::MoveRight);
+    PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+    PlayerInputComponent->BindAxis("TurnAround", this, &APawn::AddControllerYawInput);
+    
+    PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+    PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ASTUBaseCharacter::Sprint);
+    PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ASTUBaseCharacter::StopSprinting);
 }
 
 float ASTUBaseCharacter::GetMovementDirection() const
@@ -131,10 +136,21 @@ void ASTUBaseCharacter::OnDeath()
     
     //GetCharacterMovement()->DisableMovement(); Player can't move character after death
     
-    SetLifeSpan(5.f);
+    SetLifeSpan(LifeSpan);
 }
 
 void ASTUBaseCharacter::OnHealthChanged(const float Health)
 {
     HealthRenderText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+}
+
+void ASTUBaseCharacter::OnGroundLended(const FHitResult& HitResult)
+{
+    const auto LandedVelocityZ = -GetVelocity().Z;
+    
+    if(LandedVelocityZ < LandedDamageVelocity.X) return;
+
+    const auto FinalLandedDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity,
+        LandedDamage, LandedVelocityZ);
+    TakeDamage(FinalLandedDamage, FDamageEvent{},nullptr, nullptr);
 }
