@@ -8,6 +8,8 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class USTUHealthComponent;
+class UTextRenderComponent;
 
 UENUM(BlueprintType)
 enum class EMovementStatus : uint8
@@ -35,13 +37,19 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UCameraComponent* FollowCamera;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Customize Movement")
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    USTUHealthComponent* HealthComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    UTextRenderComponent* HealthRenderText;
+    
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
     EMovementStatus MovementStatus;
     
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Customize Movement")
-    float WalkSpeed = 600.f;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+    float WalkSpeed;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Customize Movement")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float SprintSpeed;
     
 	// Called when the game starts or when spawned

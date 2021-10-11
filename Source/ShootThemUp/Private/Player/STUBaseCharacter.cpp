@@ -5,6 +5,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Components/STUHealthComponent.h"
+#include "Components/TextRenderComponent.h"
 
 // Sets default values
 ASTUBaseCharacter::ASTUBaseCharacter()
@@ -18,13 +20,24 @@ ASTUBaseCharacter::ASTUBaseCharacter()
     
     FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraFollow"));
     FollowCamera->SetupAttachment(CameraBoom);
+
+    HealthComponent = CreateDefaultSubobject<USTUHealthComponent>(TEXT("HealthComponent"));
+
+    HealthRenderText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("HealthTextRender"));
+    HealthRenderText->SetupAttachment(GetRootComponent());
+
+    WalkSpeed = 600.f;
+    SprintSpeed = 900.f;
 }
 
 // Called when the game starts or when spawned
 void ASTUBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-    
+    SetMovementStatus(EMovementStatus::EMS_Normal);
+
+    check(HealthComponent);
+    check(HealthRenderText);
 }
 
 // Called every frame
@@ -32,6 +45,10 @@ void ASTUBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    const int32 Health = HealthComponent->GetHealth();
+    HealthRenderText->SetText(FText::FromString(FString::Printf(TEXT("%i"), Health)));
+
+    TakeDamage(1.f,FDamageEvent(),Controller,this);
 }
 
 // Called to bind functionality to input
