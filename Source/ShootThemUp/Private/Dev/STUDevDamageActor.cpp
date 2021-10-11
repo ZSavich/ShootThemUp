@@ -31,10 +31,9 @@ void ASTUDevDamageActor::BeginPlay()
 void ASTUDevDamageActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-    UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetActorLocation(), Radius, 24,
-        SphereColor);
+    UKismetSystemLibrary::DrawDebugSphere(GetWorld(), GetActorLocation(), Radius, 24, SphereColor);
 
-    UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), Radius,
-        nullptr, {}, this, nullptr, bDoFullDamage);
+    UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), Radius, DamageType,
+        {}, this, nullptr, bDoFullDamage);
 }
 
