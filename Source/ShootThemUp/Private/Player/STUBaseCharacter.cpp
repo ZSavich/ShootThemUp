@@ -38,15 +38,17 @@ void ASTUBaseCharacter::BeginPlay()
 
     check(HealthComponent);
     check(HealthRenderText);
+    check(GetMovementComponent());
+
+    OnHealthChanged(HealthComponent->GetHealth());
+    HealthComponent->OnDeath.AddUObject(this, &ASTUBaseCharacter::OnDeath);
+    HealthComponent->OnHealthChanged.AddUObject(this, &ASTUBaseCharacter::OnHealthChanged);
 }
 
 // Called every frame
 void ASTUBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-    const int32 Health = HealthComponent->GetHealth();
-    HealthRenderText->SetText(FText::FromString(FString::Printf(TEXT("%i"), Health)));
 }
 
 // Called to bind functionality to input
@@ -66,7 +68,7 @@ void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
     }
 }
 
-float ASTUBaseCharacter::GetMovementDirection()
+float ASTUBaseCharacter::GetMovementDirection() const
 {
     if(GetVelocity().IsZero()) return 0.f;
     
@@ -120,4 +122,19 @@ void ASTUBaseCharacter::SetMovementStatus(const EMovementStatus Status)
         default:
             ;
     }
+}
+
+void ASTUBaseCharacter::OnDeath()
+{
+    if(DeathMontage) PlayAnimMontage(DeathMontage);
+    if(Controller) GetController()->ChangeState(NAME_Spectating);
+    
+    //GetCharacterMovement()->DisableMovement(); Player can't move character after death
+    
+    SetLifeSpan(5.f);
+}
+
+void ASTUBaseCharacter::OnHealthChanged(const float Health)
+{
+    HealthRenderText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }

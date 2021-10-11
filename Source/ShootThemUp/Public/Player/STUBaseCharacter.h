@@ -45,6 +45,9 @@ protected:
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
     EMovementStatus MovementStatus;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Animations")
+    UAnimMontage* DeathMontage;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float WalkSpeed;
@@ -63,7 +66,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
     UFUNCTION(BlueprintPure)
-    float GetMovementDirection();
+    float GetMovementDirection() const;
 
 private:
     void MoveForward(float Amount);
@@ -73,4 +76,7 @@ private:
     void StopSprinting();
 
     void SetMovementStatus(const EMovementStatus Status);
+
+    void OnDeath();
+    void OnHealthChanged(const float Health);
 };
