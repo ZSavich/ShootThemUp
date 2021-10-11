@@ -27,8 +27,8 @@ void USTUHealthComponent::BeginPlay()
 void USTUHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
     AController* InstigatedBy, AActor* DamageCauser)
 {
-    //UE_LOG(LogHealthComp, Display, TEXT("%s got %f Damage || Instigator - %s || Causer - %s"),
-    //    *DamagedActor->GetName(), Damage, *InstigatedBy->GetName(), *DamageCauser->GetName());
+    UE_LOG(LogHealthComp, Display, TEXT("%s got %f Damage || Instigator - %s || Causer - %s"),
+        *DamagedActor->GetName(), Damage, InstigatedBy ? *InstigatedBy->GetName() : *FString("Nullptr"), *DamageCauser->GetName());
 
     Health -= Damage;
 }
