@@ -20,8 +20,7 @@ public:
     virtual void StartFire();
     virtual void StopFire();
     virtual void MakeShot();
-    virtual bool GetTraceData(FVector& StartPoint, FVector& EndPoint) const;
-
+    
 protected:
     UPROPERTY(VisibleAnywhere, Category = "Components")
     USkeletalMeshComponent* Mesh;
@@ -39,13 +38,10 @@ protected:
     TSubclassOf<UDamageType> DamageType;
     
 	virtual void BeginPlay() override;
-    bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
     
-private:    
+    bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
     APlayerController* GetPlayerController() const;
     
-    void MakeHit(FHitResult& HitResult, const FVector& StartPoint, const FVector& EndPoint) const;
-    void MakeDamage(AActor* const TargetActor);
-    
     FORCEINLINE FVector GetMuzzleWorldLocation() const {return Mesh->GetSocketLocation(MuzzleSocketName);}
+ 
 };
