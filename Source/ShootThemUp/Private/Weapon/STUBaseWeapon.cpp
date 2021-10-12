@@ -17,9 +17,6 @@ ASTUBaseWeapon::ASTUBaseWeapon()
 
     MuzzleSocketName = "MuzzleProjectileSocket";
     ShotMagnitude = 3000.0f;
-    
-    DamageAmount = 15.f;
-    DamageType = UDamageType::StaticClass();
 }
 
 void ASTUBaseWeapon::BeginPlay()
@@ -36,6 +33,28 @@ void ASTUBaseWeapon::StopFire()
 
 void ASTUBaseWeapon::MakeShot()
 {}
+
+bool ASTUBaseWeapon::GetTraceData(FVector& StartPoint, FVector& EndPoint) const
+{
+    FVector ViewPointLocation;
+    FRotator ViewPointRotation;
+    
+    if(!GetPlayerViewPoint(ViewPointLocation,ViewPointRotation)) return false;
+    
+    StartPoint = ViewPointLocation;
+    EndPoint = StartPoint + ViewPointRotation.Vector() * ShotMagnitude;
+    return true;
+}
+
+void ASTUBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& StartPoint, const FVector& EndPoint) const
+{
+    if(!GetWorld()) return;
+    
+    FCollisionQueryParams QueryParams;
+    QueryParams.AddIgnoredActor(GetOwner());
+    
+    GetWorld()->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint,ECC_Visibility, QueryParams);
+}
 
 APlayerController* ASTUBaseWeapon::GetPlayerController() const
 {

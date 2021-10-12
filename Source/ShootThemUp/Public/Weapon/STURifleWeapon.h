@@ -18,18 +18,20 @@ public:
     virtual void StartFire() override;
     virtual void StopFire() override;
     virtual void MakeShot() override;
-
+    virtual bool GetTraceData(FVector& StartPoint, FVector& EndPoint) const override;
+    
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponSettings")
     float FireRate;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponSettings")
     float FireScatter;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponSettings")
+    float DamageAmount;
     
 private:
     FTimerHandle FireTimer;
-
-    bool GetTraceData(FVector& StartPoint, FVector& EndPoint) const;
-    void MakeHit(FHitResult& HitResult, const FVector& StartPoint, const FVector& EndPoint) const;
+    
     void MakeDamage(AActor* const TargetActor);
 };

@@ -10,6 +10,8 @@ ASTURifleWeapon::ASTURifleWeapon()
 {
     FireRate = 0.1f;
     FireScatter = 0.025f;
+    
+    DamageAmount = 15.f;
 }
 
 void ASTURifleWeapon::StartFire()
@@ -57,18 +59,8 @@ bool ASTURifleWeapon::GetTraceData(FVector& StartPoint, FVector& EndPoint) const
     return true;
 }
 
-void ASTURifleWeapon::MakeHit(FHitResult& HitResult, const FVector& StartPoint, const FVector& EndPoint) const
-{
-    if(!GetWorld()) return;
-    
-    FCollisionQueryParams QueryParams;
-    QueryParams.AddIgnoredActor(GetOwner());
-    
-    GetWorld()->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint,ECC_Visibility, QueryParams);
-}
-
 void ASTURifleWeapon::MakeDamage(AActor* const TargetActor)
 {   
     if(!TargetActor || !TargetActor->IsA<ACharacter>()) return;
-    UGameplayStatics::ApplyDamage(TargetActor,DamageAmount,GetPlayerController(),this, DamageType);
+    UGameplayStatics::ApplyDamage(TargetActor,DamageAmount,GetPlayerController(),this, UDamageType::StaticClass());
 }
