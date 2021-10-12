@@ -38,4 +38,5 @@ void USTUWeaponComponent::SpawnWeapon()
     
     const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
     CurrentWeapon->AttachToComponent(OwnerCharacter->GetMesh(), AttachmentRules, SnapToSocketName);
+    CurrentWeapon->SetOwner(GetOwner());
 }
