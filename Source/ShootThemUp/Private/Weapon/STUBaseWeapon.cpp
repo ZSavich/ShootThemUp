@@ -21,8 +21,6 @@ ASTUBaseWeapon::ASTUBaseWeapon()
     
     DamageAmount = 15.f;
     DamageType = UDamageType::StaticClass();
-    FireRate = 0.1f;
-    FireScatter = 0.025f;
 }
 
 void ASTUBaseWeapon::BeginPlay()
@@ -33,12 +31,10 @@ void ASTUBaseWeapon::BeginPlay()
 
 void ASTUBaseWeapon::StartFire()
 {
-    GetWorld()->GetTimerManager().SetTimer(FireTimer, this, &ASTUBaseWeapon::MakeShot, FireRate, true);
 }
 
 void ASTUBaseWeapon::StopFire()
 {
-    GetWorld()->GetTimerManager().ClearTimer(FireTimer);
 }
 
 void ASTUBaseWeapon::MakeShot()
@@ -89,7 +85,7 @@ bool ASTUBaseWeapon::GetTraceData(FVector& StartPoint, FVector& EndPoint) const
     if(!GetPlayerViewPoint(ViewPointLocation,ViewPointRotation)) return false;
     
     StartPoint = ViewPointLocation;
-    const auto Scatter = FMath::VRandCone(ViewPointRotation.Vector(), FireScatter);
+    const auto Scatter = ViewPointRotation.Vector();
     EndPoint = StartPoint + Scatter * ShotMagnitude;
     return true;
 }
