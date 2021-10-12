@@ -4,6 +4,7 @@
 #include "Weapon/STUBaseWeapon.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, Log);
 
@@ -17,6 +18,9 @@ ASTUBaseWeapon::ASTUBaseWeapon()
 
     MuzzleSocketName = "MuzzleProjectileSocket";
     ShotMagnitude = 1500.0f;
+    
+    DamageAmount = 15.f;
+    DamageType = UDamageType::StaticClass();
 }
 
 void ASTUBaseWeapon::BeginPlay()
@@ -39,9 +43,10 @@ void ASTUBaseWeapon::MakeShot()
 
     FHitResult HitResult;
     MakeHit(HitResult, StartPoint, EndPoint);
-    
+        
     if(HitResult.bBlockingHit)
     {
+        MakeDamage(HitResult.GetActor());
         DrawDebugLine(GetWorld(), GetMuzzleWorldLocation() , HitResult.ImpactPoint, FColor::Red,false,5.f);
         DrawDebugSphere(GetWorld(), HitResult.ImpactPoint,10.f,24.f,FColor::Red,false,5.f);
         UE_LOG(LogTemp, Display, TEXT("Hited BoneName: %s"), *HitResult.BoneName.ToString());
@@ -49,6 +54,7 @@ void ASTUBaseWeapon::MakeShot()
     {
         DrawDebugLine(GetWorld(), GetMuzzleWorldLocation() , EndPoint, FColor::Red,false,5.f);
     }
+    
 }
 
 APlayerController* ASTUBaseWeapon::GetPlayerController() const
@@ -88,6 +94,12 @@ void ASTUBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& StartPoint, c
     QueryParams.AddIgnoredActor(GetOwner());
     
     GetWorld()->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint,ECC_Visibility, QueryParams);
+}
+
+void ASTUBaseWeapon::MakeDamage(AActor* const TargetActor)
+{   
+    if(!TargetActor || !TargetActor->IsA<ACharacter>()) return;
+    UGameplayStatics::ApplyDamage(TargetActor,DamageAmount,GetPlayerController(),this, DamageType);
 }
 
 

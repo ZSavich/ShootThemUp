@@ -5,6 +5,7 @@
 
 #include "Components/STUHealthComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/TextRenderComponent.h"
@@ -144,13 +145,12 @@ void ASTUBaseCharacter::OnDeath()
 {
     if(DeathMontage) PlayAnimMontage(DeathMontage);
     if(Controller) GetController()->ChangeState(NAME_Spectating);
-    
-    //GetCharacterMovement()->DisableMovement(); Player can't move character after death
-    
+
+    GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
     SetLifeSpan(LifeSpan);
 }
 
-void ASTUBaseCharacter::OnHealthChanged(const float Health)
+void ASTUBaseCharacter::OnHealthChanged(const float Health) const
 {
     HealthRenderText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }

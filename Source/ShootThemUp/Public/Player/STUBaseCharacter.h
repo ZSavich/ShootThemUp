@@ -36,6 +36,8 @@ public:
 
     UFUNCTION(BlueprintPure)
     float GetMovementDirection() const;
+
+    //FORCEINLINE USTUHealthComponent* GetHealthComponent() const {return HealthComponent;}
     
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -90,7 +92,7 @@ private:
     void SetMovementStatus(const EMovementStatus Status);
 
     void OnDeath();
-    void OnHealthChanged(const float Health);
+    void OnHealthChanged(const float Health) const;
 
     
 };

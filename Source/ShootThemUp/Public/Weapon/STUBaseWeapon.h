@@ -28,6 +28,12 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponSettings")
     float ShotMagnitude;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponSettings")
+    float DamageAmount;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponSettings")
+    TSubclassOf<UDamageType> DamageType;
     
     
 	virtual void BeginPlay() override;
@@ -37,6 +43,7 @@ protected:
     bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
     bool GetTraceData(FVector& StartPoint, FVector& EndPoint) const;
     void MakeHit(FHitResult& HitResult, const FVector& StartPoint, const FVector& EndPoint) const;
+    void MakeDamage(AActor* const TargetActor);
     
     FORCEINLINE FVector GetMuzzleWorldLocation() const {return Mesh->GetSocketLocation(MuzzleSocketName);}
 };
