@@ -17,7 +17,8 @@ public:
 	USTUWeaponComponent();
     
     UFUNCTION()
-    void Fire();
+    void StartFire();
+    void StopFire();
     
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")

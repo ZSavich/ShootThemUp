@@ -19,11 +19,19 @@ void USTUWeaponComponent::BeginPlay()
     SpawnWeapon();
 }
 
-void USTUWeaponComponent::Fire()
+void USTUWeaponComponent::StartFire()
 {
     if(!CurrentWeapon) return;
-    CurrentWeapon->Fire();
+    CurrentWeapon->StartFire();
 }
+
+void USTUWeaponComponent::StopFire()
+{
+    if(!CurrentWeapon) return;
+    CurrentWeapon->StopFire();
+}
+
+
 
 void USTUWeaponComponent::SpawnWeapon()
 {

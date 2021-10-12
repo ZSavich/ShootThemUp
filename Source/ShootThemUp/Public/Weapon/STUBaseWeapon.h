@@ -17,7 +17,8 @@ class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
 public:	
 	ASTUBaseWeapon();
     
-    virtual void Fire();
+    virtual void StartFire();
+    virtual void StopFire();
 
 protected:
     UPROPERTY(VisibleAnywhere, Category = "Components")
@@ -33,11 +34,19 @@ protected:
     float DamageAmount;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponSettings")
+    float FireRate;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponSettings")
+    float FireScatter;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponSettings")
     TSubclassOf<UDamageType> DamageType;
     
-    
 	virtual void BeginPlay() override;
-
+    
+private:
+    FTimerHandle FireTimer;
+    
     void MakeShot();
     APlayerController* GetPlayerController() const;
     bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;

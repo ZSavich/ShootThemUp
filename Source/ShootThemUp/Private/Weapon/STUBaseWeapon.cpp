@@ -17,10 +17,12 @@ ASTUBaseWeapon::ASTUBaseWeapon()
     SetRootComponent(Mesh);
 
     MuzzleSocketName = "MuzzleProjectileSocket";
-    ShotMagnitude = 1500.0f;
+    ShotMagnitude = 3000.0f;
     
     DamageAmount = 15.f;
     DamageType = UDamageType::StaticClass();
+    FireRate = 0.1f;
+    FireScatter = 0.025f;
 }
 
 void ASTUBaseWeapon::BeginPlay()
@@ -29,9 +31,14 @@ void ASTUBaseWeapon::BeginPlay()
 	check(Mesh);
 }
 
-void ASTUBaseWeapon::Fire()
+void ASTUBaseWeapon::StartFire()
 {
-    MakeShot();
+    GetWorld()->GetTimerManager().SetTimer(FireTimer, this, &ASTUBaseWeapon::MakeShot, FireRate, true);
+}
+
+void ASTUBaseWeapon::StopFire()
+{
+    GetWorld()->GetTimerManager().ClearTimer(FireTimer);
 }
 
 void ASTUBaseWeapon::MakeShot()
@@ -82,7 +89,8 @@ bool ASTUBaseWeapon::GetTraceData(FVector& StartPoint, FVector& EndPoint) const
     if(!GetPlayerViewPoint(ViewPointLocation,ViewPointRotation)) return false;
     
     StartPoint = ViewPointLocation;
-    EndPoint = StartPoint + ViewPointRotation.Vector() * ShotMagnitude;
+    const auto Scatter = FMath::VRandCone(ViewPointRotation.Vector(), FireScatter);
+    EndPoint = StartPoint + Scatter * ShotMagnitude;
     return true;
 }
 
