@@ -36,6 +36,7 @@ public:
     virtual void StopFire(){};
     virtual void MakeShot(){};
     virtual bool GetTraceData(FVector& StartPoint, FVector& EndPoint) const;
+    void ChangeClip();
     
 protected:
     UPROPERTY(VisibleAnywhere, Category = "Components")
@@ -59,7 +60,6 @@ protected:
     void MakeHit(FHitResult& HitResult, const FVector& StartPoint, const FVector& EndPoint) const;
 
     void DecreaseBullet();
-    void ChangeClip();
     void LogAmmo();
     
     FORCEINLINE bool IsAmmoEmpty() const {return IsClipEmpty() && CurrentAmmo.Clips <= 0 && !CurrentAmmo.Infinite;}

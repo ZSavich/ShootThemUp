@@ -75,7 +75,7 @@ void ASTUBaseWeapon::DecreaseBullet()
 
 void ASTUBaseWeapon::ChangeClip()
 {
-    if(IsAmmoEmpty()) return;
+    if(IsAmmoEmpty() || CurrentAmmo.Clips <= 0) return;
     CurrentAmmo.Bullets = DefaultAmmo.Bullets;
     CurrentAmmo.Clips--;
     UE_LOG(LogBaseWeapon, Display, TEXT("--------- Change Clip ---------"));

@@ -4,6 +4,7 @@
 #include "Components/STUWeaponComponent.h"
 #include "GameFramework/Character.h"
 #include "Notifies/STUEquipFinishedNotify.h"
+#include "Notifies/STUReloadFinishedNotify.h"
 #include "Weapon/STUBaseWeapon.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, Log);
@@ -17,7 +18,9 @@ USTUWeaponComponent::USTUWeaponComponent()
 
     CurrentWeaponIndex = 0;
     CurrentWeapon = nullptr;
+    CurrentReloadMontage = nullptr;
     bEquipAnimInProgress = false;
+    bReloadAnimInProgress = false;
 }
 
 
@@ -32,6 +35,7 @@ void USTUWeaponComponent::BeginPlay()
 void USTUWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     CurrentWeapon = nullptr;
+    CurrentReloadMontage = nullptr;
     for(const auto Weapon: Weapons)
     {
         Weapon->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
@@ -56,11 +60,11 @@ void USTUWeaponComponent::StopFire()
 void USTUWeaponComponent::SpawnWeapon()
 {
     const auto Character = Cast<ACharacter>(GetOwner());
-    if(!GetWorld() || !WeaponClasses.Num() || !Character) return;
+    if(!GetWorld() || !WeaponData.Num() || !Character) return;
 
-    for(auto WeaponClass : WeaponClasses)
+    for(auto OneWeaponData : WeaponData)
     {
-        const auto Weapon = GetWorld()->SpawnActor<ASTUBaseWeapon>(WeaponClass);
+        const auto Weapon = GetWorld()->SpawnActor<ASTUBaseWeapon>(OneWeaponData.WeaponClass);
         if(!Weapon) continue;
         Weapons.Add(Weapon);
         AttachWeaponToSocket(Weapon, Character->GetMesh(), SpareWeaponSocketName);
@@ -86,6 +90,12 @@ void USTUWeaponComponent::EquipWeapon(const int32 WeaponIndex)
         AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), SpareWeaponSocketName);
     }
     CurrentWeapon = Weapons[WeaponIndex];
+    const auto CurrentWeaponData = WeaponData.FindByPredicate(
+        [&](const FWeaponData& Data){return Data.WeaponClass == CurrentWeapon->GetClass();}
+    );
+    
+    CurrentReloadMontage = CurrentWeaponData ? CurrentWeaponData->ReloadMontage : CurrentReloadMontage;
+    
     AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), EquipWeaponSocketName);
     bEquipAnimInProgress = true;
     PlayAnimMontage(EquipMontage);
@@ -108,14 +118,17 @@ void USTUWeaponComponent::PlayAnimMontage(UAnimMontage* Montage) const
 
 void USTUWeaponComponent::InitAnimations()
 {
-    if(!EquipMontage) return;
-    
-    TArray<FAnimNotifyEvent> NotifiesEvents = EquipMontage->Notifies;
-    for(auto Event : NotifiesEvents)
+    const auto EquipNotify = FindNotifyByMontage<USTUEquipFinishedNotify>(EquipMontage);
+    if(EquipNotify)
     {
-        const auto EquipNotify = Cast<USTUEquipFinishedNotify>(Event.Notify);
-        if(!EquipNotify) continue;
         EquipNotify->OnNotify.AddUObject(this,&USTUWeaponComponent::OnEquipFinished);
+    }
+    
+    for(const auto OneWeaponData: WeaponData)
+    {
+        const auto ReloadNotify = FindNotifyByMontage<USTUReloadFinishedNotify>(OneWeaponData.ReloadMontage);
+        if(!ReloadNotify) continue;
+        ReloadNotify->OnNotify.AddUObject(this, &USTUWeaponComponent::OnReloadFinished);
     }
 }
 
@@ -124,4 +137,33 @@ void USTUWeaponComponent::OnEquipFinished(USkeletalMeshComponent* Mesh)
     const auto Character = Cast<ACharacter>(GetOwner());
     if(!Character || Character->GetMesh() != Mesh) return;
     bEquipAnimInProgress = false;
+}
+
+void USTUWeaponComponent::OnReloadFinished(USkeletalMeshComponent* Mesh)
+{
+    const auto Character = Cast<ACharacter>(GetOwner());
+    if(!Character || Character->GetMesh() != Mesh) return;
+    bReloadAnimInProgress = false;
+}
+
+void USTUWeaponComponent::Reload()
+{
+    if(!CanReload()) return;
+    bReloadAnimInProgress = true;
+    PlayAnimMontage(CurrentReloadMontage);
+    CurrentWeapon->ChangeClip();
+}
+
+template <typename T>
+T* USTUWeaponComponent::FindNotifyByMontage(const UAnimMontage* Montage)
+{
+    if(!Montage) return nullptr;
+    
+    const auto NotifiesEvents = Montage->Notifies;
+    for(auto Event : NotifiesEvents)
+    {
+        const auto Notify = Cast<T>(Event.Notify);
+        if(Notify) return Notify;
+    }
+    return nullptr;
 }
