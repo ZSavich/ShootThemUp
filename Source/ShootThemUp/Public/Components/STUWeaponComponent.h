@@ -7,6 +7,7 @@
 #include "STUWeaponComponent.generated.h"
 
 class ASTUBaseWeapon;
+class USkeletalMeshComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent
@@ -30,20 +31,31 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
     FName SpareWeaponSocketName;
     
+    UPROPERTY(EditDefaultsOnly, Category = "Animations")
+    UAnimMontage* EquipMontage;
+    
 	virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-private:    
+private:
+    int32 CurrentWeaponIndex;
+    bool bEquipAnimInProgress;
+    
     UPROPERTY(VisibleInstanceOnly, Category = "Weapons")
     ASTUBaseWeapon* CurrentWeapon;
     
     UPROPERTY(VisibleInstanceOnly, Category = "Weapons")
     TArray<ASTUBaseWeapon*> Weapons;
-
-    int32 CurrentWeaponIndex;
     
     void SpawnWeapon();
     void AttachWeaponToSocket(ASTUBaseWeapon* Weapon, USceneComponent* Component,
         const FName& SocketName) const;
     void EquipWeapon(const int32 WeaponIndex);
+    
+    void PlayAnimMontage(UAnimMontage* Montage) const;
+    void InitAnimations();
+    void OnEquipFinished(USkeletalMeshComponent* Mesh);
+
+    FORCEINLINE bool CanFire() const {return !bEquipAnimInProgress && CurrentWeapon;}
+    FORCEINLINE bool CanEquip() const {return !bEquipAnimInProgress;}
 };

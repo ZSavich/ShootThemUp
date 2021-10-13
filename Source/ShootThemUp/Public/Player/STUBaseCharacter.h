@@ -11,6 +11,7 @@ class USpringArmComponent;
 class USTUHealthComponent;
 class UTextRenderComponent;
 class USTUWeaponComponent;
+class USTUEquipFinishedNotify;
 
 UENUM(BlueprintType)
 enum class EMovementStatus : uint8
@@ -94,5 +95,4 @@ private:
     void OnDeath();
     void OnHealthChanged(const float Health) const;
 
-    
 };

@@ -17,22 +17,16 @@ ASTUBaseWeapon::ASTUBaseWeapon()
 
     MuzzleSocketName = "MuzzleProjectileSocket";
     ShotMagnitude = 3000.0f;
+
+    DefaultAmmo= {15,5,false};
 }
 
 void ASTUBaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	check(Mesh);
+    CurrentAmmo = DefaultAmmo;
 }
-
-void ASTUBaseWeapon::StartFire()
-{}
-
-void ASTUBaseWeapon::StopFire()
-{}
-
-void ASTUBaseWeapon::MakeShot()
-{}
 
 bool ASTUBaseWeapon::GetTraceData(FVector& StartPoint, FVector& EndPoint) const
 {
@@ -71,6 +65,27 @@ bool ASTUBaseWeapon::GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRot
     
     Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
     return true;
+}
+
+void ASTUBaseWeapon::DecreaseBullet()
+{
+    IsClipEmpty() ? ChangeClip() : CurrentAmmo.Bullets--;
+    LogAmmo();
+}
+
+void ASTUBaseWeapon::ChangeClip()
+{
+    if(IsAmmoEmpty()) return;
+    CurrentAmmo.Bullets = DefaultAmmo.Bullets;
+    CurrentAmmo.Clips--;
+    UE_LOG(LogBaseWeapon, Display, TEXT("--------- Change Clip ---------"));
+}
+
+void ASTUBaseWeapon::LogAmmo()
+{
+    const FString Message = "Ammo: " + FString::FromInt(CurrentAmmo.Bullets) + " || " +
+        (CurrentAmmo.Infinite ? "Infinite" : FString::FromInt(CurrentAmmo.Clips));
+    UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *Message);
 }
 
 
