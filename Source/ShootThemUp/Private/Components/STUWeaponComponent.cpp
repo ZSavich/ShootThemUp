@@ -68,6 +68,7 @@ void USTUWeaponComponent::SpawnWeapon()
         if(!Weapon) continue;
         Weapons.Add(Weapon);
         AttachWeaponToSocket(Weapon, Character->GetMesh(), SpareWeaponSocketName);
+        Weapon->OnClipEmpty.AddUObject(this, &USTUWeaponComponent::OnClipEmpty);
     }
 }
 
@@ -143,15 +144,22 @@ void USTUWeaponComponent::OnReloadFinished(USkeletalMeshComponent* Mesh)
 {
     const auto Character = Cast<ACharacter>(GetOwner());
     if(!Character || Character->GetMesh() != Mesh) return;
+    CurrentWeapon->ChangeClip();
     bReloadAnimInProgress = false;
 }
 
-void USTUWeaponComponent::Reload()
+void USTUWeaponComponent::OnClipEmpty()
 {
-    if(!CanReload()) return;
+    CurrentWeapon->StopFire();
+    Reload();
+}
+
+void USTUWeaponComponent::Reload()
+{    
+    if(!CanReload() || !CurrentWeapon->CanReload()) return;
+    
     bReloadAnimInProgress = true;
     PlayAnimMontage(CurrentReloadMontage);
-    CurrentWeapon->ChangeClip();
 }
 
 template <typename T>

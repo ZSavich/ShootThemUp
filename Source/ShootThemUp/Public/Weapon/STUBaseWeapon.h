@@ -9,6 +9,8 @@
 class USkeletalMeshComponent;
 class APlayerController;
 
+DECLARE_MULTICAST_DELEGATE(FOnClipEmpty);
+
 USTRUCT()
 struct FAmmoData
 {
@@ -37,6 +39,10 @@ public:
     virtual void MakeShot(){};
     virtual bool GetTraceData(FVector& StartPoint, FVector& EndPoint) const;
     void ChangeClip();
+
+    FORCEINLINE bool CanReload() const {return CurrentAmmo.Bullets != DefaultAmmo.Bullets && CurrentAmmo.Clips != 0 && !CurrentAmmo.Infinite;};
+    
+    FOnClipEmpty OnClipEmpty;
     
 protected:
     UPROPERTY(VisibleAnywhere, Category = "Components")
@@ -68,6 +74,4 @@ protected:
 
 private:
     FAmmoData CurrentAmmo;
-
-    
 };

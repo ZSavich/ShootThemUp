@@ -74,11 +74,13 @@ private:
     void OnEquipFinished(USkeletalMeshComponent* Mesh);
     void OnReloadFinished(USkeletalMeshComponent* Mesh);
 
+    void OnClipEmpty();
+
     template<typename T>
     T* FindNotifyByMontage(const UAnimMontage* Montage);
 
     FORCEINLINE bool CanFire() const {return !bReloadAnimInProgress && !bEquipAnimInProgress && CurrentWeapon;}
-    FORCEINLINE bool CanEquip() const {return !bEquipAnimInProgress;}
+    FORCEINLINE bool CanEquip() const {return !bEquipAnimInProgress && !bReloadAnimInProgress;}
     FORCEINLINE bool CanReload() const {return !bReloadAnimInProgress && !bEquipAnimInProgress && CurrentWeapon;}
 };
 

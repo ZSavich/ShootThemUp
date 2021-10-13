@@ -69,13 +69,19 @@ bool ASTUBaseWeapon::GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRot
 
 void ASTUBaseWeapon::DecreaseBullet()
 {
-    IsClipEmpty() ? ChangeClip() : CurrentAmmo.Bullets--;
+    CurrentAmmo.Bullets--;
+    if(IsClipEmpty())
+    {
+        OnClipEmpty.Broadcast();
+    }
     LogAmmo();
 }
 
 void ASTUBaseWeapon::ChangeClip()
 {
+    StopFire();
     if(IsAmmoEmpty() || CurrentAmmo.Clips <= 0) return;
+    
     CurrentAmmo.Bullets = DefaultAmmo.Bullets;
     CurrentAmmo.Clips--;
     UE_LOG(LogBaseWeapon, Display, TEXT("--------- Change Clip ---------"));
@@ -87,6 +93,5 @@ void ASTUBaseWeapon::LogAmmo()
         (CurrentAmmo.Infinite ? "Infinite" : FString::FromInt(CurrentAmmo.Clips));
     UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *Message);
 }
-
 
 
