@@ -84,6 +84,8 @@ void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
     PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ASTUBaseCharacter::StopSprinting);
     PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &USTUWeaponComponent::StartFire);
     PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &USTUWeaponComponent::StopFire);
+    PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &USTUWeaponComponent::NextWeapon);
+
 }
 
 float ASTUBaseCharacter::GetMovementDirection() const
@@ -149,6 +151,7 @@ void ASTUBaseCharacter::OnDeath()
 
     GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
     SetLifeSpan(LifeSpan);
+    WeaponComponent->StopFire();
 }
 
 void ASTUBaseCharacter::OnHealthChanged(const float Health) const

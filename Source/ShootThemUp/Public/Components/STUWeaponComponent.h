@@ -16,22 +16,34 @@ class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent
 public:	
 	USTUWeaponComponent();
     
-    UFUNCTION()
     void StartFire();
     void StopFire();
+    void NextWeapon();
     
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-    TSubclassOf<ASTUBaseWeapon> WeaponClass;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
-    ASTUBaseWeapon* CurrentWeapon;
+    TArray<TSubclassOf<ASTUBaseWeapon>> WeaponClasses;    
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-    FName SnapToSocketName;
+    FName EquipWeaponSocketName;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+    FName SpareWeaponSocketName;
     
 	virtual void BeginPlay() override;
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-private:
+private:    
+    UPROPERTY(VisibleInstanceOnly, Category = "Weapons")
+    ASTUBaseWeapon* CurrentWeapon;
+    
+    UPROPERTY(VisibleInstanceOnly, Category = "Weapons")
+    TArray<ASTUBaseWeapon*> Weapons;
+
+    int32 CurrentWeaponIndex;
+    
     void SpawnWeapon();
+    void AttachWeaponToSocket(ASTUBaseWeapon* Weapon, USceneComponent* Component,
+        const FName& SocketName) const;
+    void EquipWeapon(const int32 WeaponIndex);
 };
