@@ -16,8 +16,8 @@ ASTUDevDamageActor::ASTUDevDamageActor()
     Scene = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
     SetRootComponent(Scene);
     
-    BillboardComp = CreateDefaultSubobject<UBillboardComponent>(TEXT("BillboardComponent"));
-    BillboardComp->SetupAttachment(GetRootComponent());
+    //BillboardComp = CreateDefaultSubobject<UBillboardComponent>(TEXT("BillboardComponent"));
+    //BillboardComp->SetupAttachment(GetRootComponent());
 
     SphereColor = FLinearColor::Blue;
     

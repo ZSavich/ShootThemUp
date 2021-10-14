@@ -17,7 +17,10 @@ public class ShootThemUp : ModuleRules
 			"ShootThemUp/Public/Player", 
 			"ShootThemUp/Public/Components", 
 			"ShootThemUp/Public/Dev",
-			"ShootThemUp/Public/Weapon"
+			"ShootThemUp/Public/Weapon",
+			"ShootThemUp/Public/Notifies",
+			"ShootThemUp/Public/HUD",
+			
 		});
 
 		// Uncomment if you are using Slate UI

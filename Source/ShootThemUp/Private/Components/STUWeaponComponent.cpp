@@ -6,8 +6,11 @@
 #include "Notifies/STUEquipFinishedNotify.h"
 #include "Notifies/STUReloadFinishedNotify.h"
 #include "Weapon/STUBaseWeapon.h"
+#include "Notifies/AnimUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, Log);
+
+constexpr static int32 WeaponDataCount = 2;
 
 USTUWeaponComponent::USTUWeaponComponent()
 {
@@ -27,6 +30,8 @@ USTUWeaponComponent::USTUWeaponComponent()
 void USTUWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
+    checkf(WeaponData.Num() == WeaponDataCount, TEXT("WeaponComponent mush has 2 weapons!"));
+    
     SpawnWeapon();
     InitAnimations();
     EquipWeapon(CurrentWeaponIndex);
@@ -119,16 +124,27 @@ void USTUWeaponComponent::PlayAnimMontage(UAnimMontage* Montage) const
 
 void USTUWeaponComponent::InitAnimations()
 {
-    const auto EquipNotify = FindNotifyByMontage<USTUEquipFinishedNotify>(EquipMontage);
+    const auto EquipNotify = AnimUtils::FindNotifyByMontage<USTUEquipFinishedNotify>(EquipMontage);
     if(EquipNotify)
     {
         EquipNotify->OnNotify.AddUObject(this,&USTUWeaponComponent::OnEquipFinished);
     }
+    else
+    {
+        UE_LOG(LogWeaponComponent, Error, TEXT("EquipAnimation doesn't have any EquipNotifies!"));
+        checkNoEntry();
+    }
     
     for(const auto OneWeaponData: WeaponData)
     {
-        const auto ReloadNotify = FindNotifyByMontage<USTUReloadFinishedNotify>(OneWeaponData.ReloadMontage);
-        if(!ReloadNotify) continue;
+        const auto ReloadNotify = AnimUtils::FindNotifyByMontage<USTUReloadFinishedNotify>(OneWeaponData.ReloadMontage);
+        if(!ReloadNotify)
+        {
+            UE_LOG(LogWeaponComponent, Error,
+                TEXT("ReloadAnimation for %s doesn't have any ReloadNotifies!"), *OneWeaponData.WeaponClass->GetName());
+            checkNoEntry();
+            continue;
+        }
         ReloadNotify->OnNotify.AddUObject(this, &USTUWeaponComponent::OnReloadFinished);
     }
 }
@@ -162,16 +178,17 @@ void USTUWeaponComponent::Reload()
     PlayAnimMontage(CurrentReloadMontage);
 }
 
-template <typename T>
-T* USTUWeaponComponent::FindNotifyByMontage(const UAnimMontage* Montage)
+bool USTUWeaponComponent::GetWeaponUIData (FWeaponUIData& UIData) const
 {
-    if(!Montage) return nullptr;
-    
-    const auto NotifiesEvents = Montage->Notifies;
-    for(auto Event : NotifiesEvents)
-    {
-        const auto Notify = Cast<T>(Event.Notify);
-        if(Notify) return Notify;
-    }
-    return nullptr;
+    if(!CurrentWeapon) return false;
+    UIData = CurrentWeapon->GetUIData();
+    return true;
 }
+
+bool USTUWeaponComponent::GetWeaponAmmoData(FAmmoData& AmmoData) const
+{
+    if(!CurrentWeapon) return false;
+    AmmoData = CurrentWeapon->GetWeaponAmmo();
+    return true;
+}
+

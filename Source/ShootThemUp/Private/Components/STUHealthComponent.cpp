@@ -22,9 +22,9 @@ USTUHealthComponent::USTUHealthComponent()
 void USTUHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
+    checkf(MaxHealth > 0, TEXT("Wrong USTUHealthComponent::MaxHealth parameter"));
     
     SetHealth(MaxHealth);
-
     AActor* OwnerActor = GetOwner();
     if(OwnerActor)
     {

@@ -4,27 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "STUCoreTypes.h"
 #include "STUBaseWeapon.generated.h"
 
 class USkeletalMeshComponent;
 class APlayerController;
-
-DECLARE_MULTICAST_DELEGATE(FOnClipEmpty);
-
-USTRUCT()
-struct FAmmoData
-{
-    GENERATED_BODY()
-
-    UPROPERTY(EditDefaultsOnly, Category = "Ammo")
-    int32 Bullets;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Ammo")
-    int32 Clips;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Ammo")
-    bool Infinite;
-};
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
@@ -39,8 +23,10 @@ public:
     virtual void MakeShot(){};
     virtual bool GetTraceData(FVector& StartPoint, FVector& EndPoint) const;
     void ChangeClip();
+    FAmmoData GetWeaponAmmo() const {return CurrentAmmo;}
 
-    FORCEINLINE bool CanReload() const {return CurrentAmmo.Bullets != DefaultAmmo.Bullets && CurrentAmmo.Clips != 0 && !CurrentAmmo.Infinite;};
+    FORCEINLINE FWeaponUIData GetUIData() const {return UIData;};
+    FORCEINLINE bool CanReload() const {return CurrentAmmo.Bullets != DefaultAmmo.Bullets && (CurrentAmmo.Clips != 0 || CurrentAmmo.Infinite);};
     
     FOnClipEmpty OnClipEmpty;
     
@@ -50,6 +36,9 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "AmmoData")
     FAmmoData DefaultAmmo;
+
+    UPROPERTY(EditDefaultsOnly, Category = "HUD")
+    FWeaponUIData UIData;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponSettigns")
     FName MuzzleSocketName;

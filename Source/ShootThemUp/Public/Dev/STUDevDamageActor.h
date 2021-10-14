@@ -18,8 +18,8 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USceneComponent* Scene;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-    UBillboardComponent* BillboardComp;
+    //UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    //UBillboardComponent* BillboardComp;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sphere")
     float Radius;

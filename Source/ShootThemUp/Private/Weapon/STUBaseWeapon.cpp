@@ -3,6 +3,7 @@
 
 #include "Weapon/STUBaseWeapon.h"
 #include "GameFramework/Character.h"
+#include "STUCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, Log);
@@ -17,7 +18,6 @@ ASTUBaseWeapon::ASTUBaseWeapon()
 
     MuzzleSocketName = "MuzzleProjectileSocket";
     ShotMagnitude = 3000.0f;
-
     DefaultAmmo= {15,5,false};
 }
 
@@ -25,6 +25,9 @@ void ASTUBaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	check(Mesh);
+    checkf(DefaultAmmo.Bullets > 0, TEXT("Weapon %s has Bullets < 0. Please set >= 0;"), *GetName());
+    checkf(DefaultAmmo.Clips > 0, TEXT("Weapon %s has Clips < 0. Please set >= 0;"), *GetName());
+    
     CurrentAmmo = DefaultAmmo;
 }
 
@@ -74,24 +77,14 @@ void ASTUBaseWeapon::DecreaseBullet()
     {
         OnClipEmpty.Broadcast();
     }
-    LogAmmo();
 }
 
 void ASTUBaseWeapon::ChangeClip()
 {
     StopFire();
-    if(IsAmmoEmpty() || CurrentAmmo.Clips <= 0) return;
+    if(IsAmmoEmpty() && !CurrentAmmo.Infinite) return;
     
     CurrentAmmo.Bullets = DefaultAmmo.Bullets;
     CurrentAmmo.Clips--;
-    UE_LOG(LogBaseWeapon, Display, TEXT("--------- Change Clip ---------"));
 }
-
-void ASTUBaseWeapon::LogAmmo()
-{
-    const FString Message = "Ammo: " + FString::FromInt(CurrentAmmo.Bullets) + " || " +
-        (CurrentAmmo.Infinite ? "Infinite" : FString::FromInt(CurrentAmmo.Clips));
-    UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *Message);
-}
-
 

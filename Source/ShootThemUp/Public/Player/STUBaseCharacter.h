@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "STUCoreTypes.h"
 #include "STUBaseCharacter.generated.h"
 
 class UCameraComponent;
@@ -12,16 +13,6 @@ class USTUHealthComponent;
 class UTextRenderComponent;
 class USTUWeaponComponent;
 class USTUEquipFinishedNotify;
-
-UENUM(BlueprintType)
-enum class EMovementStatus : uint8
-{
-    EMS_Normal   UMETA(DisplayName = "Normal"),
-    EMS_Sprint   UMETA(DisplayName = "Sprint"),
- 
-    EMS_MAX      UMETA(DisplayName = "MaxDefault")
-};
- 
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter

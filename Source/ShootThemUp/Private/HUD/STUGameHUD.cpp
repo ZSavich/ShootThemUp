@@ -4,11 +4,24 @@
 #include "HUD/STUGameHUD.h"
 
 #include "Engine/Canvas.h"
+#include "STUPlayerHUDWidget.h"
+
+ASTUGameHUD::ASTUGameHUD()
+{
+   
+}
+
+void ASTUGameHUD::BeginPlay()
+{
+    Super::BeginPlay();
+    PlayerWidget = CreateWidget<USTUPlayerHUDWidget>(GetWorld(),PlayerHUDWidget);
+    PlayerWidget->AddToViewport();
+}
 
 void ASTUGameHUD::DrawHUD()
 {
     Super::DrawHUD();
-    DrawCrossHair();
+    //DrawCrossHair(); // Debug CrossHair
 }
 
 void ASTUGameHUD::DrawCrossHair()

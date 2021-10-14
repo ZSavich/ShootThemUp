@@ -4,22 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "STUCoreTypes.h"
 #include "STUWeaponComponent.generated.h"
 
 class ASTUBaseWeapon;
 class USkeletalMeshComponent;
-
-USTRUCT(BlueprintType)
-struct FWeaponData
-{
-    GENERATED_BODY()
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-    TSubclassOf<ASTUBaseWeapon> WeaponClass;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-    UAnimMontage* ReloadMontage;
-};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SHOOTTHEMUP_API USTUWeaponComponent : public UActorComponent
@@ -33,6 +22,8 @@ public:
     void StopFire();
     void NextWeapon();
     void Reload();
+    bool GetWeaponUIData(FWeaponUIData& UIData) const;
+    bool GetWeaponAmmoData(FAmmoData& AmmoData) const;
     
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
@@ -49,7 +40,7 @@ protected:
     
 	virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
+    
 private:
     int32 CurrentWeaponIndex;
     bool bEquipAnimInProgress;
@@ -75,10 +66,7 @@ private:
     void OnReloadFinished(USkeletalMeshComponent* Mesh);
 
     void OnClipEmpty();
-
-    template<typename T>
-    T* FindNotifyByMontage(const UAnimMontage* Montage);
-
+    
     FORCEINLINE bool CanFire() const {return !bReloadAnimInProgress && !bEquipAnimInProgress && CurrentWeapon;}
     FORCEINLINE bool CanEquip() const {return !bEquipAnimInProgress && !bReloadAnimInProgress;}
     FORCEINLINE bool CanReload() const {return !bReloadAnimInProgress && !bEquipAnimInProgress && CurrentWeapon;}
