@@ -16,6 +16,15 @@ USTUHealthComponent::USTUHealthComponent()
     HealUpdateTime = 0.5f;
     HealDelay = 3.f;
     HealModifier = 1.f;
+    
+}
+
+bool USTUHealthComponent::TryToAddHealth(const float& HealthAmount)
+{
+    if(Health == MaxHealth || IsDeath()) return false;
+
+    SetHealth(FMath::Clamp(Health+HealthAmount, 0.f, MaxHealth));
+    return true;
 }
 
 

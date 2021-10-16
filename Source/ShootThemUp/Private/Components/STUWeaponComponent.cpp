@@ -154,6 +154,10 @@ void USTUWeaponComponent::OnEquipFinished(USkeletalMeshComponent* Mesh)
     const auto Character = Cast<ACharacter>(GetOwner());
     if(!Character || Character->GetMesh() != Mesh) return;
     bEquipAnimInProgress = false;
+    if(CurrentWeapon->IsClipEmpty() && !CurrentWeapon->IsAmmoEmpty())
+    {
+        Reload();
+    }
 }
 
 void USTUWeaponComponent::OnReloadFinished(USkeletalMeshComponent* Mesh)
@@ -164,8 +168,9 @@ void USTUWeaponComponent::OnReloadFinished(USkeletalMeshComponent* Mesh)
     bReloadAnimInProgress = false;
 }
 
-void USTUWeaponComponent::OnClipEmpty()
+void USTUWeaponComponent::OnClipEmpty(ASTUBaseWeapon* TriggerWeapon)
 {
+    if(CurrentWeapon->GetClass() != TriggerWeapon->GetClass()) return;
     CurrentWeapon->StopFire();
     Reload();
 }
@@ -190,5 +195,17 @@ bool USTUWeaponComponent::GetWeaponAmmoData(FAmmoData& AmmoData) const
     if(!CurrentWeapon) return false;
     AmmoData = CurrentWeapon->GetWeaponAmmo();
     return true;
+}
+
+bool USTUWeaponComponent::TryToAddAmmo(const TSubclassOf<ASTUBaseWeapon> WeaponType, const int32& ClipsAmount) 
+{
+    for(const auto Weapon: Weapons)
+    {
+        if(Weapon && Weapon->IsA(WeaponType))
+        {
+            return Weapon->TryToAddAmmo(ClipsAmount);
+        }
+    }
+    return false;
 }
 

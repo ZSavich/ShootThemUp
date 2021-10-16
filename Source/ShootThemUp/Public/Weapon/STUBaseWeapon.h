@@ -23,10 +23,13 @@ public:
     virtual void MakeShot(){};
     virtual bool GetTraceData(FVector& StartPoint, FVector& EndPoint) const;
     void ChangeClip();
+    bool TryToAddAmmo(const int32& ClipsAmount);
+    
     FAmmoData GetWeaponAmmo() const {return CurrentAmmo;}
-
     FORCEINLINE FWeaponUIData GetUIData() const {return UIData;};
     FORCEINLINE bool CanReload() const {return CurrentAmmo.Bullets != DefaultAmmo.Bullets && (CurrentAmmo.Clips != 0 || CurrentAmmo.Infinite);};
+    FORCEINLINE bool IsClipEmpty() const {return CurrentAmmo.Bullets <= 0;}
+    FORCEINLINE bool IsAmmoEmpty() const {return IsClipEmpty() && CurrentAmmo.Clips <= 0 && !CurrentAmmo.Infinite;}
     
     FOnClipEmpty OnClipEmpty;
     
@@ -55,10 +58,8 @@ protected:
     void MakeHit(FHitResult& HitResult, const FVector& StartPoint, const FVector& EndPoint) const;
 
     void DecreaseBullet();
-    void LogAmmo();
-    
-    FORCEINLINE bool IsAmmoEmpty() const {return IsClipEmpty() && CurrentAmmo.Clips <= 0 && !CurrentAmmo.Infinite;}
-    FORCEINLINE bool IsClipEmpty() const {return CurrentAmmo.Bullets <= 0;}
+   
+    FORCEINLINE bool IsAmmoFull() const {return CurrentAmmo.Clips == DefaultAmmo.Clips && CurrentAmmo.Bullets == DefaultAmmo.Bullets;}
     FORCEINLINE FVector GetMuzzleWorldLocation() const {return Mesh->GetSocketLocation(MuzzleSocketName);}
 
 private:

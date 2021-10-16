@@ -24,6 +24,7 @@ public:
     void Reload();
     bool GetWeaponUIData(FWeaponUIData& UIData) const;
     bool GetWeaponAmmoData(FAmmoData& AmmoData) const;
+    bool TryToAddAmmo(TSubclassOf<ASTUBaseWeapon> WeaponType, const int32& ClipsAmount);
     
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
@@ -65,7 +66,7 @@ private:
     void OnEquipFinished(USkeletalMeshComponent* Mesh);
     void OnReloadFinished(USkeletalMeshComponent* Mesh);
 
-    void OnClipEmpty();
+    void OnClipEmpty(ASTUBaseWeapon* TriggerWeapon);
     
     FORCEINLINE bool CanFire() const {return !bReloadAnimInProgress && !bEquipAnimInProgress && CurrentWeapon;}
     FORCEINLINE bool CanEquip() const {return !bEquipAnimInProgress && !bReloadAnimInProgress;}

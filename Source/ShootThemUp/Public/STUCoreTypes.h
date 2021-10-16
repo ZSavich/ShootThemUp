@@ -31,7 +31,7 @@ struct FWeaponData
 
 /** Base Weapon **/
 
-DECLARE_MULTICAST_DELEGATE(FOnClipEmpty);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnClipEmpty, ASTUBaseWeapon*);
 
 USTRUCT(BlueprintType)
 struct FAmmoData

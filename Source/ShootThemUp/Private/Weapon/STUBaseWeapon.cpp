@@ -75,7 +75,7 @@ void ASTUBaseWeapon::DecreaseBullet()
     CurrentAmmo.Bullets--;
     if(IsClipEmpty())
     {
-        OnClipEmpty.Broadcast();
+        OnClipEmpty.Broadcast(this);
     }
 }
 
@@ -86,5 +86,22 @@ void ASTUBaseWeapon::ChangeClip()
     
     CurrentAmmo.Bullets = DefaultAmmo.Bullets;
     CurrentAmmo.Clips--;
+}
+
+bool ASTUBaseWeapon::TryToAddAmmo(const int32& ClipsAmount)
+{
+    if(IsAmmoFull() || (CurrentAmmo.Infinite && CurrentAmmo.Bullets == DefaultAmmo.Bullets)) return false;
+    if(IsAmmoEmpty())
+    {
+        CurrentAmmo.Clips = FMath::Clamp(ClipsAmount, 0, DefaultAmmo.Clips + 1);
+        OnClipEmpty.Broadcast(this);
+        return true;
+    }
+    else 
+    {
+        if(CurrentAmmo.Bullets != DefaultAmmo.Bullets) CurrentAmmo.Bullets = DefaultAmmo.Bullets; 
+        CurrentAmmo.Clips = FMath::Clamp(CurrentAmmo.Clips + ClipsAmount, 0, DefaultAmmo.Clips);
+        return true;
+    }
 }
 
