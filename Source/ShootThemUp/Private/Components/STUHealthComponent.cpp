@@ -19,7 +19,7 @@ USTUHealthComponent::USTUHealthComponent()
     
 }
 
-bool USTUHealthComponent::TryToAddHealth(const float& HealthAmount)
+bool USTUHealthComponent::TryToAddHealth(const float HealthAmount)
 {
     if(Health == MaxHealth || IsDeath()) return false;
 

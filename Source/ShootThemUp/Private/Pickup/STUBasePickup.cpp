@@ -26,8 +26,8 @@ ASTUBasePickup::ASTUBasePickup()
 void ASTUBasePickup::BeginPlay()
 {
 	Super::BeginPlay();
-	check(SphereCollision);
-    check(Mesh);
+	checkf(SphereCollision, TEXT("ASTUBasePickup::BeginPlay() SphereCollision in not valid"));
+    checkf(Mesh, TEXT("ASTUBasePickup::BeginPlay() Mesh is not valid"));
     GenerateRotationYaw();
 }
 

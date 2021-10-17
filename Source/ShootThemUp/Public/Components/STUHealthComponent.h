@@ -18,7 +18,7 @@ public:
     FOnDeathSignature OnDeath;
     FOnHealthChangedSignature OnHealthChanged;
 
-    bool TryToAddHealth(const float& HealthAmount);
+    bool TryToAddHealth(const float HealthAmount);
 
     FORCEINLINE float GetHealth() const {return Health;}
     FORCEINLINE bool IsDeath() const {return FMath::IsNearlyZero(Health);}

@@ -23,7 +23,7 @@ public:
     virtual void MakeShot(){};
     virtual bool GetTraceData(FVector& StartPoint, FVector& EndPoint) const;
     void ChangeClip();
-    bool TryToAddAmmo(const int32& ClipsAmount);
+    bool TryToAddAmmo(const int32 ClipsAmount);
     
     FAmmoData GetWeaponAmmo() const {return CurrentAmmo;}
     FORCEINLINE FWeaponUIData GetUIData() const {return UIData;};

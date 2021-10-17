@@ -54,10 +54,10 @@ struct FWeaponUIData
     GENERATED_BODY()
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-    UTexture2D* MainIcon;
+    UTexture2D* MainIcon = nullptr;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-    UTexture2D* CrossHairIcon;
+    UTexture2D* CrossHairIcon = nullptr;
 };
 
 /** Health Component **/

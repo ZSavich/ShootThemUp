@@ -15,10 +15,10 @@ class SHOOTTHEMUP_API ASTUAmmoPickup : public ASTUBasePickup
     
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
-    int32 ClipsAmount;
+    int32 ClipsAmount = 1;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
-    TSubclassOf<ASTUBaseWeapon> WeaponType;
+    TSubclassOf<ASTUBaseWeapon> WeaponType = nullptr;
     
     virtual bool GivePickupTo(const APawn* Pawn) override;
 };

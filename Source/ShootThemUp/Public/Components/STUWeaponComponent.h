@@ -24,7 +24,7 @@ public:
     void Reload();
     bool GetWeaponUIData(FWeaponUIData& UIData) const;
     bool GetWeaponAmmoData(FAmmoData& AmmoData) const;
-    bool TryToAddAmmo(TSubclassOf<ASTUBaseWeapon> WeaponType, const int32& ClipsAmount);
+    bool TryToAddAmmo(TSubclassOf<ASTUBaseWeapon> WeaponType, const int32 ClipsAmount);
     
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")

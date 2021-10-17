@@ -197,7 +197,7 @@ bool USTUWeaponComponent::GetWeaponAmmoData(FAmmoData& AmmoData) const
     return true;
 }
 
-bool USTUWeaponComponent::TryToAddAmmo(const TSubclassOf<ASTUBaseWeapon> WeaponType, const int32& ClipsAmount) 
+bool USTUWeaponComponent::TryToAddAmmo(TSubclassOf<ASTUBaseWeapon> WeaponType, const int32 ClipsAmount) 
 {
     for(const auto Weapon: Weapons)
     {

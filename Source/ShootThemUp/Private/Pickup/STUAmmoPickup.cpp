@@ -10,6 +10,7 @@
 
 bool ASTUAmmoPickup::GivePickupTo(const APawn* Pawn)
 {
+    checkf(WeaponType, TEXT("ASTUAmmoPickup::GivePickupTo() WeaponType In Not Valid"))
     const auto HealthComponent = STUUtils::GetPlayerComponent<USTUHealthComponent>(Pawn);
     if(!HealthComponent || HealthComponent->IsDeath()) return false;
 

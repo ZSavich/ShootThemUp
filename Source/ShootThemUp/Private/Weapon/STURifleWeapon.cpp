@@ -5,13 +5,21 @@
 #include "GameFramework/Character.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
+#include "STUWeaponFXComponent.h"
 
 ASTURifleWeapon::ASTURifleWeapon()
 {
+    WeaponFX = CreateDefaultSubobject<USTUWeaponFXComponent>(TEXT("WeaponFXComponent"));
     FireRate = 0.1f;
     FireScatter = 0.025f;
     
     DamageAmount = 15.f;
+}
+
+void ASTURifleWeapon::BeginPlay()
+{
+    Super::BeginPlay();
+    checkf(WeaponFX, TEXT("ASTURifleWeapon WeaponFX is Not Valid!"));
 }
 
 void ASTURifleWeapon::StartFire()
@@ -45,9 +53,9 @@ void ASTURifleWeapon::MakeShot()
     if(HitResult.bBlockingHit)
     {
         MakeDamage(HitResult.GetActor());
-        DrawDebugLine(GetWorld(), GetMuzzleWorldLocation() , HitResult.ImpactPoint, FColor::Red,false,5.f);
-        DrawDebugSphere(GetWorld(), HitResult.ImpactPoint,10.f,24.f,FColor::Red,false,5.f);
-        UE_LOG(LogTemp, Display, TEXT("Hited BoneName: %s"), *HitResult.BoneName.ToString());
+        //DrawDebugLine(GetWorld(), GetMuzzleWorldLocation() , HitResult.ImpactPoint, FColor::Red,false,5.f);
+        //DrawDebugSphere(GetWorld(), HitResult.ImpactPoint,10.f,24.f,FColor::Red,false,5.f);
+        WeaponFX->PlayImpactFX(HitResult);
     } else
     {
         DrawDebugLine(GetWorld(), GetMuzzleWorldLocation() , EndPoint, FColor::Red,false,5.f);
