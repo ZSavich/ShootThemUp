@@ -4,6 +4,8 @@
 #include "Components/STUWeaponFXComponent.h"
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Components/DecalComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 
 USTUWeaponFXComponent::USTUWeaponFXComponent()
@@ -14,25 +16,25 @@ USTUWeaponFXComponent::USTUWeaponFXComponent()
 void USTUWeaponFXComponent::BeginPlay()
 {
     Super::BeginPlay();
-    checkf(DefaultImpactFX, TEXT("USTUWeaponFXComponent DefaultImpactFX is Not Valid!"));
-}
-
-void USTUWeaponFXComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
 void USTUWeaponFXComponent::PlayImpactFX(const FHitResult& HitResult)
 {
-    auto Effect = DefaultImpactFX;
+    auto ImpactData = DefaultImpactData;
     if(HitResult.PhysMaterial.IsValid())
     {
         const auto PhysMaterial = HitResult.PhysMaterial.Get();
-        if(ImpactFXMap.Contains(PhysMaterial))
+        if(ImpactDataMap.Contains(PhysMaterial))
         {
-            Effect = ImpactFXMap[PhysMaterial];
+            ImpactData = ImpactDataMap[PhysMaterial];
         }
     }
-    UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Effect, HitResult.ImpactPoint, HitResult.ImpactNormal.Rotation());
+    
+    UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ImpactData.NiagaraEffect, HitResult.ImpactPoint,
+        HitResult.ImpactNormal.Rotation());
+
+    const auto ImpactDecal = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), ImpactData.DecalData.Decal, ImpactData.DecalData.Size,
+        HitResult.ImpactPoint, HitResult.ImpactNormal.Rotation(),ImpactData.DecalData.LifeTime);
+    ImpactDecal->SetFadeOut(ImpactData.DecalData.LifeTime,ImpactData.DecalData.FadeOutTime);
 }
 
