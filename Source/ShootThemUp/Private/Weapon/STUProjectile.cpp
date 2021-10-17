@@ -20,6 +20,7 @@ ASTUProjectile::ASTUProjectile()
     SphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
     SphereComponent->SetCollisionResponseToAllChannels(ECR_Block);
     SphereComponent->IgnoreActorWhenMoving(GetOwner(), true);
+    SphereComponent->bReturnMaterialOnMove = true;
     SetRootComponent(SphereComponent);
 
     MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
