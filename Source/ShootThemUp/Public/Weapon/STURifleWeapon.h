@@ -7,6 +7,8 @@
 #include "STURifleWeapon.generated.h"
 
 class USTUWeaponFXComponent;
+class UNiagaraComponent;
+class UNiagaraSystem;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTURifleWeapon : public ASTUBaseWeapon
@@ -32,11 +34,23 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponSettings")
     float DamageAmount;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FX")
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VFX")
     USTUWeaponFXComponent* WeaponFX;
+
+    UPROPERTY()
+    UNiagaraComponent* MuzzleEffectComponent;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "VFX")
+    UNiagaraSystem* TraceEffect;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "VFX")
+    FName TraceTargetName;
     
 private:
     FTimerHandle FireTimer;
     
     void MakeDamage(AActor* const TargetActor);
+    void InitMuzzleFX();
+    void SetMuzzleFXVisible(const bool Visibility) const;
+    void SpawnTraceFX(const FVector StartTarget, const FVector EndTarget) const;
 };

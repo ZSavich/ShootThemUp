@@ -9,6 +9,8 @@
 
 class USkeletalMeshComponent;
 class APlayerController;
+class UNiagaraSystem;
+class UNiagaraComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUBaseWeapon : public AActor
@@ -48,6 +50,9 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponSettings")
     float ShotMagnitude;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "VFX")
+    UNiagaraSystem* MuzzleEffect;
     
 	virtual void BeginPlay() override;
     
@@ -58,6 +63,7 @@ protected:
     void MakeHit(FHitResult& HitResult, const FVector& StartPoint, const FVector& EndPoint) const;
 
     void DecreaseBullet();
+    UNiagaraComponent* SpawnMuzzleFX() const;
    
     FORCEINLINE bool IsAmmoFull() const {return CurrentAmmo.Clips == DefaultAmmo.Clips && CurrentAmmo.Bullets == DefaultAmmo.Bullets;}
     FORCEINLINE FVector GetMuzzleWorldLocation() const {return Mesh->GetSocketLocation(MuzzleSocketName);}

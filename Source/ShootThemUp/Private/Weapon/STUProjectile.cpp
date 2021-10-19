@@ -4,12 +4,14 @@
 #include "Weapon/STUProjectile.h"
 
 #include "DrawDebugHelpers.h"
+#include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "STUWeaponFXComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/PointLightComponent.h"
 
 ASTUProjectile::ASTUProjectile()
 {
@@ -28,6 +30,15 @@ ASTUProjectile::ASTUProjectile()
     MovementComponent->ProjectileGravityScale = 0.0f;
 
     WeaponFX = CreateDefaultSubobject<USTUWeaponFXComponent>(TEXT("WeaponFXComponent"));
+
+    Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+    Mesh->SetupAttachment(GetRootComponent());
+
+    TraceFX = CreateDefaultSubobject<UNiagaraComponent>(TEXT("TraceEffect"));
+    TraceFX->SetupAttachment(GetRootComponent());
+
+    PointLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("Light"));
+    PointLight->SetupAttachment(GetRootComponent());
 
     DamageAmount = 45.f;
     DamageRadius = 100.f;
@@ -56,9 +67,12 @@ void ASTUProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* 
     UGameplayStatics::ApplyRadialDamage(GetWorld(), DamageAmount, GetActorLocation(),DamageRadius,
         UDamageType::StaticClass(),{},this,GetController());
 
-    DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 24.f, FColor::Red,false,5.f);
+    //DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 24.f, FColor::Red,false,5.f);
+    
     WeaponFX->PlayImpactFX(Hit);
-    Destroy();
+    Mesh->DestroyComponent();
+    PointLight->DestroyComponent();
+    SetLifeSpan(2.f);
 }
 
 AController* ASTUProjectile::GetController() const

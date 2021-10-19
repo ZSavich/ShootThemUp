@@ -9,6 +9,13 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogPlayerHUD, All, Log);
 
+bool USTUPlayerHUDWidget::Initialize()
+{
+    HealthComponent = STUUtils::GetPlayerComponent<USTUHealthComponent>(GetOwningPlayerPawn());
+    if(HealthComponent) HealthComponent->OnHealthChanged.AddUObject(this,&USTUPlayerHUDWidget::OnHealthChange);
+    return Super::Initialize();
+}
+
 float USTUPlayerHUDWidget::GetHealthPercent()
 {
     if(!HealthComponent)
@@ -55,6 +62,11 @@ bool USTUPlayerHUDWidget::IsPlayerSpectating() const
 {
     const auto Controller = GetOwningPlayer();
     return Controller && Controller->GetStateName() == (NAME_Spectating);
+}
+
+void USTUPlayerHUDWidget::OnHealthChange(const float Health, const float HealthDelta)
+{
+    if(HealthDelta<0.f) OnTakeDamage();
 }
 
 

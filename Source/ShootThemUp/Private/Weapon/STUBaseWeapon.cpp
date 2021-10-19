@@ -2,6 +2,8 @@
 
 
 #include "Weapon/STUBaseWeapon.h"
+
+#include "NiagaraFunctionLibrary.h"
 #include "GameFramework/Character.h"
 #include "STUCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
@@ -105,4 +107,11 @@ bool ASTUBaseWeapon::TryToAddAmmo(const int32 ClipsAmount)
         return true;
     }
 }
+
+UNiagaraComponent* ASTUBaseWeapon::SpawnMuzzleFX() const
+{
+    return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleEffect, Mesh, MuzzleSocketName,
+        FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true);
+}
+
 

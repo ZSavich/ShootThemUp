@@ -9,6 +9,8 @@
 class USphereComponent;
 class UProjectileMovementComponent;
 class USTUWeaponFXComponent;
+class UNiagaraComponent;
+class UPointLightComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUProjectile : public AActor
@@ -28,6 +30,15 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USTUWeaponFXComponent* WeaponFX;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    UStaticMeshComponent* Mesh;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    UNiagaraComponent* TraceFX;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    UPointLightComponent* PointLight;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ProjectileSettings")
     float DamageAmount;

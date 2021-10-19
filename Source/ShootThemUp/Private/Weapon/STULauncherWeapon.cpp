@@ -44,5 +44,6 @@ void ASTULauncherWeapon::MakeShot()
     Projectile->SetOwner(GetOwner());
     Projectile->FinishSpawning(SpawnTransform);
     DecreaseBullet();
+    SpawnMuzzleFX();
 }
 

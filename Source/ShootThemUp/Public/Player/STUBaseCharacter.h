@@ -84,6 +84,6 @@ private:
     void SetMovementStatus(const EMovementStatus Status);
 
     void OnDeath();
-    void OnHealthChanged(const float Health) const;
+    void OnHealthChanged(const float Health, const float HealthDelta) const;
 
 };
