@@ -4,7 +4,7 @@ class STUUtils
 {
 public:
     template <typename T>
-    static T* GetPlayerComponent(const APawn* PlayerPawn)
+    static T* GetPlayerComponent(const AActor* PlayerPawn)
     {
         if(!PlayerPawn) return nullptr;
 

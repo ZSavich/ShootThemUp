@@ -11,6 +11,7 @@
 USTUNextLocationTask::USTUNextLocationTask()
 {
     NodeName = "NextLocation";
+    bAroundSelf = true;
 }
 
 EBTNodeResult::Type USTUNextLocationTask::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -18,15 +19,22 @@ EBTNodeResult::Type USTUNextLocationTask::ExecuteTask(UBehaviorTreeComponent& Ow
     const auto AIController = OwnerComp.GetAIOwner();
     const auto Blackboard = OwnerComp.GetBlackboardComponent();
     if(!AIController || !Blackboard) return EBTNodeResult::Failed;
-
+    
     const auto Pawn = AIController->GetPawn();
     if(!Pawn) return EBTNodeResult::Failed;
     
     const auto NavSystem = UNavigationSystemV1::GetCurrent(Pawn);
     if(!NavSystem) return EBTNodeResult::Failed;
 
+    FVector Location = Pawn->GetActorLocation();
+    if(!bAroundSelf)
+    {
+        const auto EnemyActor = Cast<APawn>(Blackboard->GetValueAsObject(EnemyActorKey.SelectedKeyName));
+        Location = EnemyActor->GetActorLocation();
+    }
+
     FNavLocation Result;
-    const bool bSuccess = NavSystem->GetRandomReachablePointInRadius(Pawn->GetActorLocation(),Radius,Result);
+    const bool bSuccess = NavSystem->GetRandomReachablePointInRadius(Location, Radius,Result);
     if(!bSuccess) return EBTNodeResult::Failed;
 
     Blackboard->SetValueAsVector(AimLocationKey.SelectedKeyName, Result.Location);

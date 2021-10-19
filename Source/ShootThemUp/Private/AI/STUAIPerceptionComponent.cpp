@@ -3,6 +3,8 @@
 
 #include "AI/STUAIPerceptionComponent.h"
 
+#include "STUHealthComponent.h"
+#include "STUUtils.h"
 #include "Perception/AISense_Sight.h"
 
 APawn* USTUAIPerceptionComponent::GetClosestPawn() const
@@ -19,6 +21,9 @@ APawn* USTUAIPerceptionComponent::GetClosestPawn() const
         const auto Pawn = Cast<APawn>(Actor);
         if(!Pawn) return nullptr;
 
+        const auto HealthComponent = STUUtils::GetPlayerComponent<USTUHealthComponent>(Pawn);
+        if(!HealthComponent || HealthComponent->IsDeath()) return nullptr;
+        
         const auto Distance = (GetOwner()->GetActorLocation() - Pawn->GetActorLocation()).Size();
         if(Distance < ClosestDistance)
         {

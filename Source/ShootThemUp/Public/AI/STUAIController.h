@@ -25,4 +25,6 @@ protected:
     
     virtual void OnPossess(APawn* InPawn) override;
     virtual void Tick(float DeltaSeconds) override;
+
+    APawn* GetFocusOnActor() const;
 };

@@ -25,5 +25,12 @@ void ASTUAIController::OnPossess(APawn* InPawn)
 void ASTUAIController::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-    SetFocus(PerceptionComp->GetClosestPawn());
+    SetFocus(GetFocusOnActor());
+}
+
+APawn* ASTUAIController::GetFocusOnActor() const
+{
+    const auto FocusPawn = PerceptionComp->GetClosestPawn();
+    if(!FocusPawn) return nullptr;
+    return FocusPawn;
 }
