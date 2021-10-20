@@ -23,7 +23,7 @@ void ASTUAICharacter::OnDeath()
 {
     Super::OnDeath();
 
-    const auto Controller = Cast<AAIController>(GetController());
-    if(!Controller) return;
-    Controller->BrainComponent->Cleanup();
+    const auto AIController = Cast<AAIController>(GetController());
+    if(!AIController) return;
+    AIController->BrainComponent->Cleanup();
 }
