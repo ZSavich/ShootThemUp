@@ -20,7 +20,7 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	ASTUBaseCharacter();
+	ASTUBaseCharacter(const FObjectInitializer& ObjectInitializer);
     
     virtual void Tick(float DeltaTime) override;
     

@@ -61,9 +61,6 @@ void ASTURifleWeapon::MakeShot()
         EndTarget = HitResult.ImpactPoint;
         MakeDamage(HitResult.GetActor());
         WeaponFX->PlayImpactFX(HitResult);
-    } else
-    {
-        DrawDebugLine(GetWorld(), GetMuzzleWorldLocation() , EndPoint, FColor::Red,false,5.f);
     }
     DecreaseBullet();
     SpawnTraceFX(GetMuzzleWorldLocation(), EndTarget);
@@ -74,7 +71,7 @@ bool ASTURifleWeapon::GetTraceData(FVector& StartPoint, FVector& EndPoint) const
     FVector ViewPointLocation;
     FRotator ViewPointRotation;
     
-    if(!GetPlayerViewPoint(ViewPointLocation,ViewPointRotation)) return false;
+    if(!GetCharacterViewPoint(ViewPointLocation,ViewPointRotation)) return false;
     
     StartPoint = ViewPointLocation;
     const auto Scatter = FMath::VRandCone(ViewPointRotation.Vector(), FireScatter);

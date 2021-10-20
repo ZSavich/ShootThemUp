@@ -3,6 +3,7 @@
 
 #include "Weapon/STUBaseWeapon.h"
 
+#include "DrawDebugHelpers.h"
 #include "NiagaraFunctionLibrary.h"
 #include "GameFramework/Character.h"
 #include "STUCoreTypes.h"
@@ -38,10 +39,11 @@ bool ASTUBaseWeapon::GetTraceData(FVector& StartPoint, FVector& EndPoint) const
     FVector ViewPointLocation;
     FRotator ViewPointRotation;
     
-    if(!GetPlayerViewPoint(ViewPointLocation,ViewPointRotation)) return false;
+    if(!GetCharacterViewPoint(ViewPointLocation,ViewPointRotation)) return false;
     
     StartPoint = ViewPointLocation;
     EndPoint = StartPoint + ViewPointRotation.Vector() * ShotMagnitude;
+    
     return true;
 }
 
@@ -52,7 +54,7 @@ void ASTUBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& StartPoint, c
     FCollisionQueryParams QueryParams;
     QueryParams.AddIgnoredActor(GetOwner());
     QueryParams.bReturnPhysicalMaterial = true;
-    
+
     GetWorld()->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint,ECC_Visibility, QueryParams);
 }
 
@@ -64,12 +66,21 @@ APlayerController* ASTUBaseWeapon::GetPlayerController() const
     return Player->GetController<APlayerController>();
 }
 
-bool ASTUBaseWeapon::GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const
+bool ASTUBaseWeapon::GetCharacterViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const
 {
-    const auto Controller = GetPlayerController();
-    if(!Controller) return false;
-    
-    Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
+    const auto Character = Cast<ACharacter>(GetOwner());
+    const auto bIsPlayer = Character ? Character->IsPlayerControlled() : false;
+    if(bIsPlayer)
+    {
+        const auto Controller = GetPlayerController();
+        if(!Controller) return false;
+        Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);  
+    }
+    else
+    {
+        ViewLocation = GetMuzzleWorldLocation();
+        ViewRotation = Mesh->GetSocketRotation(MuzzleSocketName);
+    }
     return true;
 }
 

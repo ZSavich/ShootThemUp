@@ -56,7 +56,7 @@ protected:
     
 	virtual void BeginPlay() override;
     
-    bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
+    bool GetCharacterViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
     
     APlayerController* GetPlayerController() const;
     

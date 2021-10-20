@@ -10,6 +10,7 @@
 
 USTUFindEnemyService::USTUFindEnemyService()
 {
+    NodeName="FindEnemyService";
 }
 
 void USTUFindEnemyService::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
@@ -24,7 +25,8 @@ void USTUFindEnemyService::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* No
     if(!PerceptionComponent) return;
     
     const auto EnemyPawn = PerceptionComponent->GetClosestPawn();
-    if(!EnemyPawn) return;
-
-    Blackboard->SetValueAsObject(EnemyActorKey.SelectedKeyName, EnemyPawn);
+    if(!EnemyPawn)
+        Blackboard->SetValueAsObject(EnemyActorKey.SelectedKeyName, nullptr);
+    else
+        Blackboard->SetValueAsObject(EnemyActorKey.SelectedKeyName, EnemyPawn);
 }

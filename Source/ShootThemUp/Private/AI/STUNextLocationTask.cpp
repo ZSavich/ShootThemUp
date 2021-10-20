@@ -40,3 +40,4 @@ EBTNodeResult::Type USTUNextLocationTask::ExecuteTask(UBehaviorTreeComponent& Ow
     Blackboard->SetValueAsVector(AimLocationKey.SelectedKeyName, Result.Location);
     return EBTNodeResult::Succeeded;
 }
+

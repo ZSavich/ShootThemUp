@@ -24,6 +24,7 @@ USTUWeaponComponent::USTUWeaponComponent()
     CurrentReloadMontage = nullptr;
     bEquipAnimInProgress = false;
     bReloadAnimInProgress = false;
+    bCanFire = true;
 }
 
 
@@ -166,6 +167,7 @@ void USTUWeaponComponent::OnReloadFinished(USkeletalMeshComponent* Mesh)
     if(!Character || Character->GetMesh() != Mesh) return;
     CurrentWeapon->ChangeClip();
     bReloadAnimInProgress = false;
+    bCanFire = true;
 }
 
 void USTUWeaponComponent::OnClipEmpty(ASTUBaseWeapon* TriggerWeapon)
