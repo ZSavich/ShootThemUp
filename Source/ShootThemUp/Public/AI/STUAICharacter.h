@@ -16,4 +16,7 @@ class SHOOTTHEMUP_API ASTUAICharacter : public ASTUBaseCharacter
 
 public:
     ASTUAICharacter(const FObjectInitializer& ObjectInitializer);
+
+protected:
+    virtual void OnDeath() override;
 };

@@ -70,6 +70,7 @@ protected:
     
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+    virtual void OnDeath();
 
 private:
     UFUNCTION()
@@ -82,8 +83,6 @@ private:
     void StopSprinting();
 
     void SetMovementStatus(const EMovementStatus Status);
-
-    void OnDeath();
     void OnHealthChanged(const float Health, const float HealthDelta) const;
 
 };
