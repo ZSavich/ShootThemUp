@@ -15,9 +15,11 @@ class SHOOTTHEMUP_API ASTUBasePickup : public AActor
 	
 public:	
 	ASTUBasePickup();
-
+    
     virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
     virtual void Tick(float DeltaSeconds) override;
+    
+    FORCEINLINE bool CanBeTaken() const {return !GetWorldTimerManager().IsTimerActive(RespawnTimer);};
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -31,6 +33,8 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
     float RotationYaw;
+    
+    FTimerHandle RespawnTimer;
     
 	virtual void BeginPlay() override;
 

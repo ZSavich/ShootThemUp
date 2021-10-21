@@ -19,6 +19,6 @@ void USTUEnemyEnvQueryContext::ProvideContext(FEnvQueryInstance& QueryInstance, 
     
     const auto EnemyActor = Cast<APawn>(Controller->GetBlackboardComponent()->GetValueAsObject(EnemyActorKeyName));   
     if(!EnemyActor) return;
-    UE_LOG(LogTemp, Warning, TEXT("USTUEnemyEnvQueryContext::ProvideContext 4"));
+    
     UEnvQueryItemType_Actor::SetContextHelper(ContextData, EnemyActor);
 }
