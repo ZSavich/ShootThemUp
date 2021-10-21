@@ -32,3 +32,16 @@ void USTUAIWeaponComponent::NextWeapon()
     }
     bCanFire = false;
 }
+
+
+
+bool USTUAIWeaponComponent::NeedPickupAmmo(const TSubclassOf<ASTUBaseWeapon> SearchWeapon, const int32& MinCount) const
+{
+    for(const auto Weapon : Weapons)
+    {
+        if(Weapon->IsA(SearchWeapon))
+            if(Weapon->GetWeaponAmmo().Clips <= MinCount)
+                return true;
+    }
+    return false;
+}

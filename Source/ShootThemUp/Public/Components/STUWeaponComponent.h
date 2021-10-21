@@ -25,7 +25,7 @@ public:
     bool GetWeaponUIData(FWeaponUIData& UIData) const;
     bool GetWeaponAmmoData(FAmmoData& AmmoData) const;
     bool TryToAddAmmo(TSubclassOf<ASTUBaseWeapon> WeaponType, const int32 ClipsAmount);
-
+    
 protected:    
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
     TArray<FWeaponData> WeaponData;    
@@ -57,7 +57,6 @@ protected:
     
     FORCEINLINE bool CanFire() const {return !bReloadAnimInProgress && !bEquipAnimInProgress && CurrentWeapon;}
     FORCEINLINE bool CanEquip() const {return !bEquipAnimInProgress && !bReloadAnimInProgress;}
-
     
 private:
     bool bEquipAnimInProgress;

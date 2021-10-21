@@ -15,4 +15,6 @@ class SHOOTTHEMUP_API USTUAIWeaponComponent : public USTUWeaponComponent
 public:
     virtual void StartFire() override;
     virtual void NextWeapon() override;
+    
+    bool NeedPickupAmmo(const TSubclassOf<ASTUBaseWeapon> SearchWeapon, const int32& MinCount) const;
 };

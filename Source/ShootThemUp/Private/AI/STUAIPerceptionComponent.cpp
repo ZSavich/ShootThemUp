@@ -15,7 +15,6 @@ APawn* USTUAIPerceptionComponent::GetClosestPawn() const
 
     float ClosestDistance = MAX_FLT;
     APawn* ClosestPawn = nullptr;
-
     for (const auto Actor : PerceivedActors)
     {
         const auto Pawn = Cast<APawn>(Actor);
@@ -31,5 +30,6 @@ APawn* USTUAIPerceptionComponent::GetClosestPawn() const
             ClosestPawn = Pawn;
         }
     }
+    
     return ClosestPawn;
 }

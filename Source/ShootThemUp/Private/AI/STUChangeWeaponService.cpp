@@ -16,7 +16,6 @@ USTUChangeWeaponService::USTUChangeWeaponService()
 void USTUChangeWeaponService::ChangeWeapon(UBehaviorTreeComponent& OwnerComp) const
 {
     const auto RandFloat = FMath::RandRange(0.f,1.f);
-    UE_LOG(LogTemp, Warning, TEXT("USTUChangeWeaponService::ChangeWeapon RandFloat - %f"), RandFloat);
     if(RandFloat > Probability) return;
 
     const auto Controller = OwnerComp.GetAIOwner();
@@ -25,7 +24,6 @@ void USTUChangeWeaponService::ChangeWeapon(UBehaviorTreeComponent& OwnerComp) co
     const auto WeaponComponent = STUUtils::GetPlayerComponent<USTUWeaponComponent>(Controller->GetPawn());
     if(!WeaponComponent) return;
     
-    UE_LOG(LogTemp, Warning, TEXT("USTUChangeWeaponService::ChangeWeapon WeaponComponent"));
     WeaponComponent->NextWeapon();
 }
 
