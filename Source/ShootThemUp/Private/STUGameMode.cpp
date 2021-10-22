@@ -3,7 +3,11 @@
 
 #include "STUGameMode.h"
 
+#include "EngineUtils.h"
 #include "STUPlayerState.h"
+#include "STURespawnComponent.h"
+#include "STUUtils.h"
+#include "STUWeaponComponent.h"
 #include "HUD/STUGameHUD.h"
 #include "Player/STUBaseCharacter.h"
 #include "Player/STUPlayerController.h"
@@ -11,6 +15,8 @@
 #include "AI/STUAIController.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogGameRound, All, Log);
+
+static const int32 MinRoundTimeForRespawn = 10;
 
 ASTUGameMode::ASTUGameMode()
 {
@@ -22,7 +28,9 @@ ASTUGameMode::ASTUGameMode()
 void ASTUGameMode::StartPlay()
 {
     Super::StartPlay();
-    CurrentRound = 1;
+
+    RoundData.RoundsNum = GameData.RoundsNum;
+    
     SpawnPawns();
     CreateTeamsInfo();
     StartRound();
@@ -53,24 +61,26 @@ UClass* ASTUGameMode::GetDefaultPawnClassForController_Implementation(AControlle
 
 void ASTUGameMode::StartRound()
 {
-    if(CurrentRound <= GameData.RoundsNum)
+    if(RoundData.CurrentRound <= GameData.RoundsNum)
     {
-        RoundCountDown = GameData.RoundTime;
+        ResetPlayers();
+        RoundData.RoundCountDown = GameData.RoundTime;
         GetWorldTimerManager().SetTimer(GameTimerHandle,this,&ASTUGameMode::GameTimerUpdate,1.f,true);
-        return;
     }
-    UE_LOG(LogGameRound, Display, TEXT("================= GAME OVER ================="));
+    else
+    {
+        GameOver();
+    }
+    
 }
 
 void ASTUGameMode::GameTimerUpdate()
 {
-    UE_LOG(LogGameRound, Display, TEXT("Time: %i ||| Round: %i/%i"), RoundCountDown, CurrentRound, GameData.RoundsNum);
-    if(--RoundCountDown <= 0)
+    if(--RoundData.RoundCountDown <= 0)
     {
         GetWorldTimerManager().ClearTimer(GameTimerHandle);
-        CurrentRound++;
+        RoundData.CurrentRound++;
         StartRound();
-        ResetPlayers();
     }
 }
 
@@ -109,14 +119,14 @@ void ASTUGameMode::CreateTeamsInfo()
         const auto PlayerState = Cast<ASTUPlayerState>(Pawn->GetPlayerState());
         if(!PlayerState) continue;
 
-        PlayerState->SetTeamColor(DetermineColorBeTeamID(TeamID));
+        PlayerState->SetTeamColor(DetermineColorByTeamID(TeamID));
         PlayerState->SetTeamID(TeamID);
         SetPlayerColor(Controller);
         TeamID = TeamID == 1 ? 2 : 1;
     }
 }
 
-FLinearColor ASTUGameMode::DetermineColorBeTeamID(const int32& TeamID)
+FLinearColor ASTUGameMode::DetermineColorByTeamID(const int32& TeamID)
 {
     if(TeamID - 1 < GameData.TeamColors.Num())
         return GameData.TeamColors[TeamID - 1];
@@ -133,4 +143,54 @@ void ASTUGameMode::SetPlayerColor(AController* Controller) const
     if(!PlayerState) return;
     
     Pawn->SetPlayerColor(PlayerState->GetTeamColor());
+}
+
+void ASTUGameMode::Killed(AController* KillerController, AController* VictimController) const
+{
+    const auto KillerPawn = KillerController ? Cast<ASTUBaseCharacter>(KillerController->GetPawn()) : nullptr;
+    const auto VictimPawn = VictimController ? Cast<ASTUBaseCharacter>(VictimController->GetPawn()) : nullptr;
+
+    if(KillerPawn)
+    {
+        const auto KillerState = Cast<ASTUPlayerState>(KillerPawn->GetPlayerState());
+        KillerState->AddKill();
+    }
+
+    if(VictimPawn)
+    {
+        const auto VictimState = Cast<ASTUPlayerState>(VictimPawn->GetPlayerState());
+        VictimState->AddDeath();
+    }
+    StartRespawn(VictimPawn);
+}
+
+void ASTUGameMode::RespawnRequest(AController* Controller)
+{
+    ResetOnePlayer(Controller);
+}
+
+void ASTUGameMode::StartRespawn(const APawn* Pawn) const
+{
+    if(RoundData.RoundCountDown > GameData.RespawnTime + MinRoundTimeForRespawn)
+    {
+        const auto RespawnComponent = STUUtils::GetPlayerComponent<USTURespawnComponent>(Pawn->GetController());
+        
+        if(!RespawnComponent) return;
+        RespawnComponent->Respawn(GameData.RespawnTime);
+    }
+}
+
+void ASTUGameMode::GameOver() const
+{
+    for(const auto Pawn: TActorRange<APawn>(GetWorld()))
+    {
+        if(Pawn)
+        {
+            const auto WeaponComponent = STUUtils::GetPlayerComponent<USTUWeaponComponent>(Pawn);
+            if(WeaponComponent) WeaponComponent->StopFire();
+            
+            Pawn->TurnOff();
+            Pawn->DisableInput(nullptr);
+        }
+    }
 }

@@ -80,9 +80,9 @@ bool ASTURifleWeapon::GetTraceData(FVector& StartPoint, FVector& EndPoint) const
 }
 
 void ASTURifleWeapon::MakeDamage(AActor* const TargetActor)
-{   
+{
     if(!TargetActor || !TargetActor->IsA<ACharacter>()) return;
-    UGameplayStatics::ApplyDamage(TargetActor,DamageAmount,GetPlayerController(),this, UDamageType::StaticClass());
+    UGameplayStatics::ApplyDamage(TargetActor,DamageAmount, GetController(),this, UDamageType::StaticClass());
 }
 
 void ASTURifleWeapon::InitMuzzleFX()
@@ -110,4 +110,10 @@ void ASTURifleWeapon::SpawnTraceFX(const FVector StartTarget, const FVector EndT
     {
         TraceEffectComponent->SetVariableVec3(TraceTargetName, EndTarget);
     }
+}
+
+AController* ASTURifleWeapon::GetController() const
+{
+    const auto Player = Cast<ACharacter>(GetOwner());
+    return Player ? Player->GetController() : nullptr;
 }

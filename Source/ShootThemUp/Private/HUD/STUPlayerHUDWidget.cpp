@@ -3,18 +3,28 @@
 
 #include "HUD/STUPlayerHUDWidget.h"
 
+#include "STUGameMode.h"
 #include "STUHealthComponent.h"
 #include "STUWeaponComponent.h"
 #include "STUUtils.h"
+#include "STUPlayerState.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogPlayerHUD, All, Log);
 
 bool USTUPlayerHUDWidget::Initialize()
 {
-    HealthComponent = STUUtils::GetPlayerComponent<USTUHealthComponent>(GetOwningPlayerPawn());
-    if(HealthComponent) HealthComponent->OnHealthChanged.AddUObject(this,&USTUPlayerHUDWidget::OnHealthChange);
+    if(!GetWorld()) return false;
+    GameMode = Cast<ASTUGameMode>(GetWorld()->GetAuthGameMode());
     
     return Super::Initialize();
+}
+
+void USTUPlayerHUDWidget::BindWidgetsToPlayer()
+{
+    HealthComponent = STUUtils::GetPlayerComponent<USTUHealthComponent>(GetOwningPlayerPawn());
+    WeaponComponent = STUUtils::GetPlayerComponent<USTUWeaponComponent>(GetOwningPlayerPawn());
+    if(HealthComponent)
+    HealthComponent->OnHealthChanged.AddUObject(this,&USTUPlayerHUDWidget::OnHealthChange);
 }
 
 float USTUPlayerHUDWidget::GetHealthPercent()
@@ -70,4 +80,22 @@ void USTUPlayerHUDWidget::OnHealthChange(const float Health, const float HealthD
     if(HealthDelta<0.f) OnTakeDamage();
 }
 
+bool USTUPlayerHUDWidget::GetRoundData(FRoundData& RoundData)
+{
+    if(!GameMode)
+    {
+        if(!GetWorld()) return false;
+        GameMode = Cast<ASTUGameMode>(GetWorld()->GetAuthGameMode());
+    }
+    RoundData = GameMode->GetRoundData();
+    return true;
+}
+
+bool USTUPlayerHUDWidget::GetPlayerStatistic(FPlayerStatistic& PlayerStatistic) const
+{
+    const auto PlayerState = GetOwningPlayer()->GetPlayerState<ASTUPlayerState>();
+    if(!PlayerState) return false;
+    PlayerStatistic = PlayerState->GetPlayerStatistic();
+    return true;
+}
 

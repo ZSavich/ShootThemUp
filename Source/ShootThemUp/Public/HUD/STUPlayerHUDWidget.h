@@ -9,6 +9,8 @@
 
 class USTUHealthComponent;
 class USTUWeaponComponent;
+class ASTUGameMode;
+
 
 UCLASS()
 class SHOOTTHEMUP_API USTUPlayerHUDWidget : public UUserWidget
@@ -17,7 +19,7 @@ class SHOOTTHEMUP_API USTUPlayerHUDWidget : public UUserWidget
 
 public:
     virtual bool Initialize() override;
-    void CleanComponents() {HealthComponent = nullptr; WeaponComponent = nullptr;}
+    void BindWidgetsToPlayer();
     
 protected:
 
@@ -26,6 +28,9 @@ protected:
 
     UPROPERTY()
     USTUWeaponComponent* WeaponComponent;
+
+    UPROPERTY()
+    ASTUGameMode* GameMode;
     
     UFUNCTION(BlueprintPure)
     float GetHealthPercent();
@@ -35,6 +40,12 @@ protected:
 
     UFUNCTION(BlueprintPure)
     bool GetWeaponAmmoData(FAmmoData& AmmoData);
+
+    UFUNCTION(BlueprintPure)
+    bool GetRoundData(FRoundData& RoundData);
+
+    UFUNCTION(BlueprintPure)
+    bool GetPlayerStatistic(FPlayerStatistic& PlayerStatistic) const;
 
     UFUNCTION(BlueprintPure)
     bool IsPlayerAlive() ;

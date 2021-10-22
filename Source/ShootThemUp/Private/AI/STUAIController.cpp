@@ -2,7 +2,7 @@
 
 
 #include "AI/STUAIController.h"
-
+#include "STURespawnComponent.h"
 #include "STUAICharacter.h"
 #include "STUAIPerceptionComponent.h"
 
@@ -11,6 +11,8 @@ ASTUAIController::ASTUAIController()
     PrimaryActorTick.bCanEverTick = true;
     PerceptionComp = CreateDefaultSubobject<USTUAIPerceptionComponent>(TEXT("PerceptionComponent"));
     SetPerceptionComponent(*PerceptionComp);
+
+    RespawnComponent = CreateDefaultSubobject<USTURespawnComponent>(TEXT("RepsawnComponent"));
 
     bWantsPlayerState = true;
 }

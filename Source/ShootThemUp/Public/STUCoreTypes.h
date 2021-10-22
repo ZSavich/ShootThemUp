@@ -123,9 +123,39 @@ struct FGameData
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game")
     TArray<FLinearColor> TeamColors;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game", meta = (ClampMin = "1", ClampMax = "20"))
+    int32 RespawnTime = 5;
 };
 
+USTRUCT(BlueprintType)
+struct FRoundData
+{
+    GENERATED_BODY()
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RoundData")
+    int32 RoundsNum = 0;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RoundData")
+    int32 CurrentRound = 1;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RoundData")
+    int32 RoundCountDown = 0;
+};
+
+/** PlayerState **/
+
+USTRUCT(BlueprintType)
+struct FPlayerStatistic
+{
+    GENERATED_BODY()
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PlayerState")
+    int32 KillsNum = 0;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PlayerState")
+    int32 DeathsNum = 0;
+};
 
 
 

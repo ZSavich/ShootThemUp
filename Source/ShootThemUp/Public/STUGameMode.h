@@ -21,6 +21,10 @@ public:
     virtual void StartPlay() override;
     virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 
+    void Killed(AController* KillerController, AController* VictimController) const;
+    void RespawnRequest(AController* Controller);
+
+    FORCEINLINE FRoundData GetRoundData() const {return RoundData;}
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Players")
     FGameData GameData;
@@ -30,10 +34,9 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Players")
     TSubclassOf<ASTUAICharacter> AIPawnClass;
-
-    int32 CurrentRound;
-    int32 RoundCountDown;
+    
     FTimerHandle GameTimerHandle;
+    FRoundData RoundData;
     
     void SpawnPawns();
     void StartRound();
@@ -43,6 +46,10 @@ protected:
     void ResetOnePlayer(AController* Controller);
 
     void CreateTeamsInfo();
-    FLinearColor DetermineColorBeTeamID(const int32& TeamID);
+    FLinearColor DetermineColorByTeamID(const int32& TeamID);
     void SetPlayerColor(AController* Controller) const;
+
+    void StartRespawn(const APawn* Pawn) const;
+
+    void GameOver() const;
 };

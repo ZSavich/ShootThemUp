@@ -18,10 +18,14 @@ APawn* USTUAIPerceptionComponent::GetClosestPawn() const
     for (const auto Actor : PerceivedActors)
     {
         const auto Pawn = Cast<APawn>(Actor);
-        if(!Pawn) return nullptr;
-
+        const auto OwnerPawn = Cast<AController>(GetOwner());
+        if(!Pawn || !OwnerPawn) continue;
+        
+        const bool AreEnemy = STUUtils::AreEnemy(Pawn->GetController(), OwnerPawn);
+        if(!AreEnemy) continue;
+        
         const auto HealthComponent = STUUtils::GetPlayerComponent<USTUHealthComponent>(Pawn);
-        if(!HealthComponent || HealthComponent->IsDeath()) return nullptr;
+        if(!HealthComponent || HealthComponent->IsDeath()) continue;
         
         const auto Distance = (GetOwner()->GetActorLocation() - Pawn->GetActorLocation()).Size();
         if(Distance < ClosestDistance)

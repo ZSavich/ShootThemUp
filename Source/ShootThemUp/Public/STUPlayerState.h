@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "STUCoreTypes.h"
 #include "GameFramework/PlayerState.h"
 #include "STUPlayerState.generated.h"
 
@@ -20,8 +21,18 @@ public:
 
     FORCEINLINE FLinearColor GetTeamColor() const {return TeamColor;}
     FORCEINLINE void SetTeamColor(const FLinearColor& Color) {TeamColor=Color;}
+
+    FORCEINLINE void AddKill() {++PlayerStatistic.KillsNum;}
+    FORCEINLINE int32 GetKillsNum() const {return PlayerStatistic.KillsNum;}
+
+    FORCEINLINE void AddDeath() {++PlayerStatistic.DeathsNum;}
+    FORCEINLINE int32 GetDeathsNum() const {return PlayerStatistic.DeathsNum;}
+
+    FORCEINLINE FPlayerStatistic GetPlayerStatistic() const {return PlayerStatistic;}
     
 private:
-    int32 TeamID;
-    FLinearColor TeamColor;
+    int32 TeamID = 0;
+    FLinearColor TeamColor = FLinearColor::Red;
+    
+    FPlayerStatistic PlayerStatistic;
 };

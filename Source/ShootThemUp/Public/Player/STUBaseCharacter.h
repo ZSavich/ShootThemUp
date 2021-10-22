@@ -7,10 +7,7 @@
 #include "STUCoreTypes.h"
 #include "STUBaseCharacter.generated.h"
 
-class UCameraComponent;
-class USpringArmComponent;
 class USTUHealthComponent;
-class UTextRenderComponent;
 class USTUWeaponComponent;
 class USTUEquipFinishedNotify;
 
@@ -22,28 +19,14 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
 public:
 	ASTUBaseCharacter(const FObjectInitializer& ObjectInitializer);
     
-    virtual void Tick(float DeltaTime) override;
-    
-    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
     UFUNCTION(BlueprintPure)
     float GetMovementDirection() const;
-
+    
     void SetPlayerColor(const FLinearColor& Color) const;
-    //FORCEINLINE USTUHealthComponent* GetHealthComponent() const {return HealthComponent;}
     
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-    USpringArmComponent* CameraBoom;
-    
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-    UCameraComponent* FollowCamera;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USTUHealthComponent*  HealthComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-    UTextRenderComponent* HealthRenderText;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Conponents")
     USTUWeaponComponent* WeaponComponent;
@@ -57,12 +40,6 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
     FVector2D LandedDamage;
     
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-    float WalkSpeed;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-    float SprintSpeed;
-    
     UPROPERTY(EditDefaultsOnly, Category = "Animations")
     UAnimMontage* DeathMontage;
 
@@ -72,21 +49,11 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game")
     FName MaterialColorName;
     
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
     virtual void OnDeath();
-    virtual void Reset() override;
 private:
     UFUNCTION()
     void OnGroundLanded(const FHitResult& HitResult);
-    
-    void MoveForward(float Amount);
-    void MoveRight(float Amount);
-
-    void Sprint();
-    void StopSprinting();
-
-    void SetMovementStatus(const EMovementStatus Status);
     void OnHealthChanged(const float Health, const float HealthDelta) const;
 
 };

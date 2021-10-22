@@ -7,6 +7,7 @@
 #include "STUAIController.generated.h"
 
 class USTUAIPerceptionComponent;
+class USTURespawnComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUAIController : public AAIController
@@ -22,6 +23,9 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
     USTUAIPerceptionComponent* PerceptionComp;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+    USTURespawnComponent* RespawnComponent;
     
     virtual void OnPossess(APawn* InPawn) override;
     virtual void Tick(float DeltaSeconds) override;

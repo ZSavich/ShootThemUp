@@ -18,6 +18,7 @@ public:
 
     UPROPERTY()
     USTUPlayerHUDWidget* PlayerWidget;
+    
 protected:
     virtual void BeginPlay() override;
     
