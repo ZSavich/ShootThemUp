@@ -103,8 +103,21 @@ struct FImpactData
     FDecalData DecalData;
 };
 
+/** GameMode **/
+USTRUCT(BlueprintType)
+struct FGameData
+{
+    GENERATED_BODY()
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game", meta = (ClampMin = "1", ClampMax = "10"))
+    int32 PlayersNum = 1;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game", meta = (ClampMin = "1", ClampMax = "10"))
+    int32 RoundsNum = 4;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game", meta = (ClampMin = "1", ClampMax = "300"))
+    int32 RoundTime = 10; // Seconds 
+};
 
 
 
