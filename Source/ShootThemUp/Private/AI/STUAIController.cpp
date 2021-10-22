@@ -11,6 +11,8 @@ ASTUAIController::ASTUAIController()
     PrimaryActorTick.bCanEverTick = true;
     PerceptionComp = CreateDefaultSubobject<USTUAIPerceptionComponent>(TEXT("PerceptionComponent"));
     SetPerceptionComponent(*PerceptionComp);
+
+    bWantsPlayerState = true;
 }
 
 void ASTUAIController::OnPossess(APawn* InPawn)

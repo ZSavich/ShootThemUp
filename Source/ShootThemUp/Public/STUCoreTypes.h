@@ -116,8 +116,16 @@ struct FGameData
     int32 RoundsNum = 4;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game", meta = (ClampMin = "1", ClampMax = "300"))
-    int32 RoundTime = 10; // Seconds 
+    int32 RoundTime = 10; // Seconds
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game")
+    FLinearColor DefaultTeamColor = FLinearColor::Red;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game")
+    TArray<FLinearColor> TeamColors;
 };
+
+
 
 
 

@@ -43,6 +43,8 @@ ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer& ObjectInitializer
     LandedDamage = FVector2D(10.f, 100.f);
 
     LifeSpan = 5.f;
+
+    MaterialColorName = "Paint Color";
 }
 
 // Called when the game starts or when spawned
@@ -157,6 +159,12 @@ void ASTUBaseCharacter::OnDeath()
     WeaponComponent->StopFire();
 }
 
+void ASTUBaseCharacter::Reset()
+{
+    
+    Super::Reset();
+}
+
 void ASTUBaseCharacter::OnHealthChanged(const float Health, const float HealthDelta) const
 {
     HealthRenderText->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
@@ -173,5 +181,11 @@ void ASTUBaseCharacter::OnGroundLanded(const FHitResult& HitResult)
     TakeDamage(FinalLandedDamage, FDamageEvent{},nullptr, nullptr);
 }
 
+void ASTUBaseCharacter::SetPlayerColor(const FLinearColor& Color) const
+{
+    const auto MaterialInstance = GetMesh()->CreateAndSetMaterialInstanceDynamic(0);
+    if(!MaterialInstance) return;
+    MaterialInstance->SetVectorParameterValue(MaterialColorName, Color);
+}
 
 

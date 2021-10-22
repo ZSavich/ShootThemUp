@@ -29,6 +29,7 @@ public:
     UFUNCTION(BlueprintPure)
     float GetMovementDirection() const;
 
+    void SetPlayerColor(const FLinearColor& Color) const;
     //FORCEINLINE USTUHealthComponent* GetHealthComponent() const {return HealthComponent;}
     
 protected:
@@ -67,11 +68,14 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Death")
     float LifeSpan;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game")
+    FName MaterialColorName;
     
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
     virtual void OnDeath();
-
+    virtual void Reset() override;
 private:
     UFUNCTION()
     void OnGroundLanded(const FHitResult& HitResult);

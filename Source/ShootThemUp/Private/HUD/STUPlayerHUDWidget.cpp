@@ -13,6 +13,7 @@ bool USTUPlayerHUDWidget::Initialize()
 {
     HealthComponent = STUUtils::GetPlayerComponent<USTUHealthComponent>(GetOwningPlayerPawn());
     if(HealthComponent) HealthComponent->OnHealthChanged.AddUObject(this,&USTUPlayerHUDWidget::OnHealthChange);
+    
     return Super::Initialize();
 }
 

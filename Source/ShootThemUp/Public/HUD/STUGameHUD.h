@@ -16,6 +16,8 @@ class SHOOTTHEMUP_API ASTUGameHUD : public AHUD
 public:
     ASTUGameHUD();
 
+    UPROPERTY()
+    USTUPlayerHUDWidget* PlayerWidget;
 protected:
     virtual void BeginPlay() override;
     
@@ -25,6 +27,4 @@ protected:
 private:
     virtual void DrawHUD() override;
     void DrawCrossHair();
-
-    USTUPlayerHUDWidget* PlayerWidget;
 };

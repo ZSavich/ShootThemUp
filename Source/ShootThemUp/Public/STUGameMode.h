@@ -38,4 +38,11 @@ protected:
     void SpawnPawns();
     void StartRound();
     void GameTimerUpdate();
+
+    void ResetPlayers();
+    void ResetOnePlayer(AController* Controller);
+
+    void CreateTeamsInfo();
+    FLinearColor DetermineColorBeTeamID(const int32& TeamID);
+    void SetPlayerColor(AController* Controller) const;
 };

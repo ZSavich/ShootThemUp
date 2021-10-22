@@ -17,6 +17,7 @@ class SHOOTTHEMUP_API USTUPlayerHUDWidget : public UUserWidget
 
 public:
     virtual bool Initialize() override;
+    void CleanComponents() {HealthComponent = nullptr; WeaponComponent = nullptr;}
     
 protected:
 
