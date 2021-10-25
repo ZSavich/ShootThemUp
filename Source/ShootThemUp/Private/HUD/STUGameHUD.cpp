@@ -3,19 +3,51 @@
 
 #include "HUD/STUGameHUD.h"
 
+#include "STUGameMode.h"
 #include "Engine/Canvas.h"
 #include "STUPlayerHUDWidget.h"
+#include "STUPauseWidget.h"
 
-ASTUGameHUD::ASTUGameHUD()
-{
-   
-}
+DEFINE_LOG_CATEGORY_STATIC(LogGameHUD, All, Log)
 
 void ASTUGameHUD::BeginPlay()
 {
     Super::BeginPlay();
-    PlayerWidget = CreateWidget<USTUPlayerHUDWidget>(GetWorld(),PlayerHUDWidget);
-    PlayerWidget->AddToViewport();
+
+    PlayerWidget = CreateWidget<USTUPlayerHUDWidget>(GetWorld(), PlayerHUDWidget);
+    GameWidgets.Add(EMatchState::EMS_InProgress, PlayerWidget);
+    GameWidgets.Add(EMatchState::EMS_Pause, CreateWidget<USTUPauseWidget>(GetWorld(), PauseWidget));
+
+    for(const auto GameWidgetTuple : GameWidgets)
+    {
+        const auto GameWidget = GameWidgetTuple.Value;
+        if(!GameWidget) continue;
+        GameWidget->AddToViewport();
+        GameWidget->SetVisibility(ESlateVisibility::Hidden);
+    }
+
+    if(!GetWorld()) return;
+    const auto GameMode = Cast<ASTUGameMode>(GetWorld()->GetAuthGameMode());
+    if(GameMode)
+    {
+        GameMode->OnMatchStateChanged.AddUObject(this, &ASTUGameHUD::OnMatchStateChanged);
+    }
+}
+
+void ASTUGameHUD::OnMatchStateChanged(const EMatchState State)
+{
+    if(CurrentWidget)
+    {
+        CurrentWidget->SetVisibility(ESlateVisibility::Hidden);
+    }
+    if(GameWidgets.Contains(State))
+    {
+        CurrentWidget = GameWidgets[State];
+    }
+    if(CurrentWidget)
+    {
+        CurrentWidget->SetVisibility(ESlateVisibility::Visible);
+    }
 }
 
 void ASTUGameHUD::DrawHUD()

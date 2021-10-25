@@ -17,14 +17,21 @@ class SHOOTTHEMUP_API ASTUGameMode : public AGameModeBase
     
 public:
     ASTUGameMode();
+
+    FOnMatchStateChangedSignature OnMatchStateChanged;
     
     virtual void StartPlay() override;
     virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
+    virtual bool SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate) override;
+    virtual bool ClearPause() override;
 
     void Killed(AController* KillerController, AController* VictimController) const;
     void RespawnRequest(AController* Controller);
+    void SetMatchState(const EMatchState State);
 
     FORCEINLINE FRoundData GetRoundData() const {return RoundData;}
+    FORCEINLINE EMatchState GetMatchState() const {return MatchState;}
+    
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Players")
     FGameData GameData;
@@ -38,6 +45,8 @@ protected:
     FTimerHandle GameTimerHandle;
     FRoundData RoundData;
     
+    EMatchState MatchState;
+    
     void SpawnPawns();
     void StartRound();
     void GameTimerUpdate();
@@ -49,7 +58,7 @@ protected:
     FLinearColor DetermineColorByTeamID(const int32& TeamID);
     void SetPlayerColor(AController* Controller) const;
 
+    
     void StartRespawn(const APawn* Pawn) const;
-
-    void GameOver() const;
+    void GameOver();
 };

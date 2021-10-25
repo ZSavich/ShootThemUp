@@ -104,6 +104,7 @@ struct FImpactData
 };
 
 /** GameMode **/
+
 USTRUCT(BlueprintType)
 struct FGameData
 {
@@ -142,6 +143,17 @@ struct FRoundData
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RoundData")
     int32 RoundCountDown = 0;
 };
+
+UENUM(BlueprintType)
+enum class EMatchState : uint8
+{
+    EMS_WaitingToStart  UMETA(DisplayName="WaitingToStart"),
+    EMS_InProgress      UMETA(DisplayName="InProgress"),
+    EMS_Pause          UMETA(DisplayName="Pause"),
+    EMS_GameOver        UMETA(DisplayName="GameOver")
+};
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchStateChangedSignature, EMatchState);
 
 /** PlayerState **/
 

@@ -23,17 +23,17 @@ ASTUGameMode::ASTUGameMode()
     DefaultPawnClass = ASTUBaseCharacter::StaticClass();
     PlayerControllerClass = ASTUPlayerController::StaticClass();
     HUDClass = ASTUGameHUD::StaticClass();
+    MatchState = EMatchState::EMS_WaitingToStart;
 }
 
 void ASTUGameMode::StartPlay()
 {
     Super::StartPlay();
-
     RoundData.RoundsNum = GameData.RoundsNum;
-    
     SpawnPawns();
     CreateTeamsInfo();
     StartRound();
+    SetMatchState(EMatchState::EMS_InProgress);
 }
 
 void ASTUGameMode::SpawnPawns()
@@ -57,6 +57,26 @@ UClass* ASTUGameMode::GetDefaultPawnClassForController_Implementation(AControlle
         return AIPawnClass;
     }
     return Super::GetDefaultPawnClassForController_Implementation(InController);
+}
+
+bool ASTUGameMode::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
+{
+    const auto Result = Super::SetPause(PC, CanUnpauseDelegate);
+    if(Result)
+    {
+        SetMatchState(EMatchState::EMS_Pause);
+    }
+    return Result;
+}
+
+bool ASTUGameMode::ClearPause()
+{
+    const auto Result = Super::ClearPause();
+    if(Result)
+    {
+        SetMatchState(EMatchState::EMS_InProgress);
+    }
+    return Result;
 }
 
 void ASTUGameMode::StartRound()
@@ -145,6 +165,13 @@ void ASTUGameMode::SetPlayerColor(AController* Controller) const
     Pawn->SetPlayerColor(PlayerState->GetTeamColor());
 }
 
+void ASTUGameMode::SetMatchState(const EMatchState State)
+{
+    if(MatchState == State) return;
+    MatchState = State;
+    OnMatchStateChanged.Broadcast(MatchState);
+}
+
 void ASTUGameMode::Killed(AController* KillerController, AController* VictimController) const
 {
     const auto KillerPawn = KillerController ? Cast<ASTUBaseCharacter>(KillerController->GetPawn()) : nullptr;
@@ -180,7 +207,7 @@ void ASTUGameMode::StartRespawn(const APawn* Pawn) const
     }
 }
 
-void ASTUGameMode::GameOver() const
+void ASTUGameMode::GameOver()
 {
     for(const auto Pawn: TActorRange<APawn>(GetWorld()))
     {
@@ -193,4 +220,5 @@ void ASTUGameMode::GameOver() const
             Pawn->DisableInput(nullptr);
         }
     }
+    SetMatchState(EMatchState::EMS_GameOver);
 }

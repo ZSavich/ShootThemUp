@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "STUCoreTypes.h"
 #include "STUGameHUD.generated.h"
 
 class USTUPlayerHUDWidget;
+class USTUPauseWidget;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUGameHUD : public AHUD
@@ -14,18 +16,27 @@ class SHOOTTHEMUP_API ASTUGameHUD : public AHUD
 	GENERATED_BODY()
 
 public:
-    ASTUGameHUD();
 
+    virtual void DrawHUD() override;
+    
     UPROPERTY()
     USTUPlayerHUDWidget* PlayerWidget;
     
 protected:
-    virtual void BeginPlay() override;
-    
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
     TSubclassOf<USTUPlayerHUDWidget> PlayerHUDWidget;
+    
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
+    TSubclassOf<USTUPauseWidget> PauseWidget;
 
-private:
-    virtual void DrawHUD() override;
+    UPROPERTY()
+    TMap<EMatchState, UUserWidget*> GameWidgets;
+
+    UPROPERTY()
+    UUserWidget* CurrentWidget = nullptr;;
+    
+    virtual void BeginPlay() override;
+    
+    void OnMatchStateChanged(const EMatchState State);
     void DrawCrossHair();
 };
