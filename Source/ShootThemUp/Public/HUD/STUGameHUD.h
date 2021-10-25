@@ -9,6 +9,7 @@
 
 class USTUPlayerHUDWidget;
 class USTUPauseWidget;
+class USTUGameOverWidget;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUGameHUD : public AHUD
@@ -27,8 +28,11 @@ protected:
     TSubclassOf<USTUPlayerHUDWidget> PlayerHUDWidget;
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
-    TSubclassOf<USTUPauseWidget> PauseWidget;
-
+    TSubclassOf<USTUPauseWidget> PauseWidgetClass;
+    
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
+    TSubclassOf<USTUGameOverWidget> GameOverWidgetClass;
+    
     UPROPERTY()
     TMap<EMatchState, UUserWidget*> GameWidgets;
 

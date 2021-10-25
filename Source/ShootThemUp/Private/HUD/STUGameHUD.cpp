@@ -7,6 +7,7 @@
 #include "Engine/Canvas.h"
 #include "STUPlayerHUDWidget.h"
 #include "STUPauseWidget.h"
+#include "STUGameOverWidget.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogGameHUD, All, Log)
 
@@ -16,7 +17,8 @@ void ASTUGameHUD::BeginPlay()
 
     PlayerWidget = CreateWidget<USTUPlayerHUDWidget>(GetWorld(), PlayerHUDWidget);
     GameWidgets.Add(EMatchState::EMS_InProgress, PlayerWidget);
-    GameWidgets.Add(EMatchState::EMS_Pause, CreateWidget<USTUPauseWidget>(GetWorld(), PauseWidget));
+    GameWidgets.Add(EMatchState::EMS_Pause, CreateWidget<USTUPauseWidget>(GetWorld(), PauseWidgetClass));
+    GameWidgets.Add(EMatchState::EMS_GameOver, CreateWidget<USTUGameOverWidget>(GetWorld(), GameOverWidgetClass));
 
     for(const auto GameWidgetTuple : GameWidgets)
     {

@@ -46,13 +46,13 @@ void ASTUPlayerController::OnPauseGame()
 
 void ASTUPlayerController::OnMatchStateChanged(const EMatchState State)
 {
-    if(State == EMatchState::EMS_Pause)
-    {
-        bShowMouseCursor = true;
-        SetInputMode(FInputModeUIOnly());
-    } else
+    if(State == EMatchState::EMS_InProgress)
     {
         bShowMouseCursor = false;
         SetInputMode(FInputModeGameOnly());
+    } else
+    {
+        bShowMouseCursor = true;
+        SetInputMode(FInputModeUIOnly());
     }
 }

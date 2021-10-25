@@ -16,6 +16,9 @@ class SHOOTTHEMUP_API ASTUPlayerState : public APlayerState
 	GENERATED_BODY()
 
 public:
+    FORCEINLINE FString GetCharacterName() const {return CharacterName;}
+    FORCEINLINE void SetCharacterName(const FString& Name) {CharacterName = Name;}
+    
     FORCEINLINE int32 GetTeamID() const {return TeamID;}
     FORCEINLINE void SetTeamID(const int32& ID) {TeamID=ID;}
 
@@ -33,6 +36,7 @@ public:
 private:
     int32 TeamID = 0;
     FLinearColor TeamColor = FLinearColor::Red;
+    FString CharacterName = "Default";
     
     FPlayerStatistic PlayerStatistic;
 };
