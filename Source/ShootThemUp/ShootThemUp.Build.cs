@@ -30,7 +30,9 @@ public class ShootThemUp : ModuleRules
 			"ShootThemUp/Public/Notifies",
 			"ShootThemUp/Public/HUD",
 			"ShootThemUp/Public/Pickup",
-			"ShootThemUp/Public/AI"
+			"ShootThemUp/Public/AI",
+			"ShootThemUp/Public/Menu",
+			"ShootThemUp/Public/Menu/UI",
 			
 		});
 

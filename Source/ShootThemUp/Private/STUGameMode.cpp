@@ -4,6 +4,7 @@
 #include "STUGameMode.h"
 
 #include "EngineUtils.h"
+#include "STUGameInstance.h"
 #include "STUPlayerState.h"
 #include "STURespawnComponent.h"
 #include "STUUtils.h"

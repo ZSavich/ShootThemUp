@@ -9,6 +9,7 @@
 
 class UVerticalBox;
 class USTUPlayerStatRowWidget;
+class UButton;
 
 UCLASS()
 class SHOOTTHEMUP_API USTUGameOverWidget : public UUserWidget
@@ -16,7 +17,7 @@ class SHOOTTHEMUP_API USTUGameOverWidget : public UUserWidget
 	GENERATED_BODY()
     
 public:
-    virtual bool Initialize() override;
+    virtual void NativeOnInitialized() override;
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget")
@@ -25,6 +26,12 @@ protected:
     UPROPERTY(meta = (BindWidget))
     UVerticalBox* PlayerStatBox;
 
+    UPROPERTY(meta = (BindWidget))
+    UButton* ResetLevelButton;
+
     void OnMatchStateChange(const EMatchState State);
+    UFUNCTION()
+    void OnResetLevel();
+    
     void UpdatePlayerStat();
 };

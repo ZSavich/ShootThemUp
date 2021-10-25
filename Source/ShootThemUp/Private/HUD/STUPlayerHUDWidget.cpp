@@ -11,12 +11,13 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogPlayerHUD, All, Log);
 
-bool USTUPlayerHUDWidget::Initialize()
+void USTUPlayerHUDWidget::NativeOnInitialized()
 {
-    if(!GetWorld()) return false;
-    GameMode = Cast<ASTUGameMode>(GetWorld()->GetAuthGameMode());
-    
-    return Super::Initialize();
+    if(GetWorld())
+    {
+        GameMode = Cast<ASTUGameMode>(GetWorld()->GetAuthGameMode());
+    }
+    Super::NativeOnInitialized();
 }
 
 void USTUPlayerHUDWidget::BindWidgetsToPlayer()

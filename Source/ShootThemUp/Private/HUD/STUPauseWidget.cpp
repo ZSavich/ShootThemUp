@@ -3,16 +3,14 @@
 #include "STUGameMode.h"
 #include "Components/Button.h"
 
-bool USTUPauseWidget::Initialize()
+void USTUPauseWidget::NativeOnInitialized()
 {
-    const auto Result = Super::Initialize();
     if(ClearPauseButton)
     {
         ClearPauseButton->OnClicked.AddDynamic(this, &USTUPauseWidget::OnClearPause);
     }
-    return Result;
+    Super::NativeOnInitialized();
 }
-
 void USTUPauseWidget::OnClearPause()
 {
     if(!GetWorld() || !GetWorld()->GetAuthGameMode()) return;
