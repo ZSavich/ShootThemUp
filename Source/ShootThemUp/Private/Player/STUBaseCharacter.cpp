@@ -55,7 +55,7 @@ void ASTUBaseCharacter::OnDeath()
     SetLifeSpan(LifeSpan);
     WeaponComponent->StopFire();
 }
-void ASTUBaseCharacter::OnHealthChanged(const float Health, const float HealthDelta) const
+void ASTUBaseCharacter::OnHealthChanged(const float Health, const float HealthDelta)
 {}
 
 void ASTUBaseCharacter::OnGroundLanded(const FHitResult& HitResult)

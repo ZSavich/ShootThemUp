@@ -49,11 +49,11 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game")
     FName MaterialColorName;
     
+    virtual void OnHealthChanged(const float Health, const float HealthDelta);
 	virtual void BeginPlay() override;
     virtual void OnDeath();
 private:
     UFUNCTION()
     void OnGroundLanded(const FHitResult& HitResult);
-    void OnHealthChanged(const float Health, const float HealthDelta) const;
 
 };
