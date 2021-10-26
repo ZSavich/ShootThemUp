@@ -2,8 +2,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "STUBaseWidget.h"
 #include "STUGameInstance.h"
-#include "Blueprint/UserWidget.h"
 #include "STUMenuWidget.generated.h"
 
 class UButton;
@@ -12,7 +12,7 @@ class USTULevelItemWidget;
 class USTUGameInstance;
 
 UCLASS()
-class SHOOTTHEMUP_API USTUMenuWidget : public UUserWidget
+class SHOOTTHEMUP_API USTUMenuWidget : public USTUBaseWidget
 {
 	GENERATED_BODY()
 
@@ -32,6 +32,9 @@ protected:
     UPROPERTY(meta = (BindWidget))
     UHorizontalBox* LevelItemsBox;
 
+    UPROPERTY(meta = (BindWidgetAnim), Transient)
+    UWidgetAnimation* HideAnimation;
+
     UFUNCTION()
     void OnStartLevel();
 
@@ -41,6 +44,7 @@ protected:
     TArray<USTULevelItemWidget*> LevelItemWidgets;
     
     void OnLevelSelected(const FLevelData& LevelData);
+    virtual void OnAnimationFinished_Implementation(const UWidgetAnimation* Animation) override;
 
 private:
     void InitLevelItems();

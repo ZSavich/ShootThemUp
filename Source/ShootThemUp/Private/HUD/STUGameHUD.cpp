@@ -8,6 +8,7 @@
 #include "STUPlayerHUDWidget.h"
 #include "STUPauseWidget.h"
 #include "STUGameOverWidget.h"
+#include "STUBaseWidget.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogGameHUD, All, Log)
 

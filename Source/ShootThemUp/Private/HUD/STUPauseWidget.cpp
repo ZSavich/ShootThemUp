@@ -9,6 +9,7 @@ void USTUPauseWidget::NativeOnInitialized()
     {
         ClearPauseButton->OnClicked.AddDynamic(this, &USTUPauseWidget::OnClearPause);
     }
+    Show();
     Super::NativeOnInitialized();
 }
 void USTUPauseWidget::OnClearPause()

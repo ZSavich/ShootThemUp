@@ -7,6 +7,7 @@
 #include "STUCoreTypes.h"
 #include "STUGameHUD.generated.h"
 
+class USTUBaseWidget;
 class USTUPlayerHUDWidget;
 class USTUPauseWidget;
 class USTUGameOverWidget;
@@ -34,10 +35,10 @@ protected:
     TSubclassOf<USTUGameOverWidget> GameOverWidgetClass;
     
     UPROPERTY()
-    TMap<EMatchState, UUserWidget*> GameWidgets;
+    TMap<EMatchState, USTUBaseWidget*> GameWidgets;
 
     UPROPERTY()
-    UUserWidget* CurrentWidget = nullptr;;
+    USTUBaseWidget* CurrentWidget = nullptr;;
     
     virtual void BeginPlay() override;
     

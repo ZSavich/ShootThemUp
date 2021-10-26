@@ -22,6 +22,7 @@ void USTUGameOverWidget::NativeOnInitialized()
     {
         ResetLevelButton->OnClicked.AddDynamic(this, &USTUGameOverWidget::OnResetLevel);
     }
+    Show();
     Super::NativeOnInitialized();
 }
 
@@ -60,6 +61,7 @@ void USTUGameOverWidget::UpdatePlayerStat()
         PlayerStatRow->SetKills(STUUtils::TextFromInt(PlayerState->GetKillsNum()));
         PlayerStatRow->SetDeaths(STUUtils::TextFromInt(PlayerState->GetDeathsNum()));
         PlayerStatRow->SetTeam(STUUtils::TextFromInt(PlayerState->GetTeamID()));
+        PlayerStatRow->SetTeamColor(PlayerState->GetTeamColor());
         PlayerStatRow->SetPlayerIndicatorVisibility(Controller->IsPlayerController());
         PlayerStatBox->AddChildToVerticalBox(PlayerStatRow);
     }

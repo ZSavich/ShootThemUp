@@ -7,6 +7,8 @@ void USTULevelItemWidget::NativeOnInitialized()
 {
     if(LevelSelectButton)
         LevelSelectButton->OnClicked.AddDynamic(this, &USTULevelItemWidget::OnLevelItemClicked);
+        LevelSelectButton->OnHovered.AddDynamic(this, &USTULevelItemWidget::OnLevelItemHovered);
+        LevelSelectButton->OnUnhovered.AddDynamic(this, &USTULevelItemWidget::OnLevelItemUnHovered);
     if(FrameImage)
         FrameImage->SetVisibility(ESlateVisibility::Hidden);
     Super::NativeOnInitialized();
@@ -19,8 +21,18 @@ void USTULevelItemWidget::OnLevelItemClicked()
 
 void USTULevelItemWidget::SetSelected(const bool Selected) const
 {
-    return Selected ? FrameImage->SetVisibility(ESlateVisibility::Visible) :
-                        FrameImage->SetVisibility(ESlateVisibility::Hidden);
+    LevelImage->SetColorAndOpacity(Selected ? FLinearColor::Red : FLinearColor::White);
+}
+
+void USTULevelItemWidget::OnLevelItemHovered()
+{
+    FrameImage->SetVisibility(ESlateVisibility::Visible);
+           
+}
+
+void USTULevelItemWidget::OnLevelItemUnHovered()
+{
+    FrameImage->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void USTULevelItemWidget::SetLevelData(const FLevelData& NewLevelData)

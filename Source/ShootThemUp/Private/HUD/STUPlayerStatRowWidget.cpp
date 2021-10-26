@@ -30,6 +30,12 @@ void USTUPlayerStatRowWidget::SetTeam(const FText& Team) const
     TeamTextBlock->SetText(Team);
 }
 
+void USTUPlayerStatRowWidget::SetTeamColor(const FLinearColor& Color) const
+{
+    if(!TeamColor) return;
+    TeamColor->SetColorAndOpacity(Color);
+}
+
 void USTUPlayerStatRowWidget::SetPlayerIndicatorVisibility(const bool Visible) const
 {
     if(!PlayerIndicatorImage) return;

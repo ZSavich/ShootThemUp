@@ -8,6 +8,7 @@
 #include "STUWeaponComponent.h"
 #include "STUUtils.h"
 #include "STUPlayerState.h"
+#include "Components/ProgressBar.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogPlayerHUD, All, Log);
 
@@ -25,17 +26,11 @@ void USTUPlayerHUDWidget::BindWidgetsToPlayer()
     HealthComponent = STUUtils::GetPlayerComponent<USTUHealthComponent>(GetOwningPlayerPawn());
     WeaponComponent = STUUtils::GetPlayerComponent<USTUWeaponComponent>(GetOwningPlayerPawn());
     if(HealthComponent)
-    HealthComponent->OnHealthChanged.AddUObject(this,&USTUPlayerHUDWidget::OnHealthChange);
-}
-
-float USTUPlayerHUDWidget::GetHealthPercent()
-{
-    if(!HealthComponent)
     {
-        HealthComponent = STUUtils::GetPlayerComponent<USTUHealthComponent>(GetOwningPlayerPawn());
-        return 0;
+        HealthComponent->OnHealthChanged.AddUObject(this,&USTUPlayerHUDWidget::OnHealthChange);
+        UpdateHealthBar();
     }
-    return HealthComponent->GetHealthPercent();
+    Show();
 }
 
 bool USTUPlayerHUDWidget::GetWeaponUIData(FWeaponUIData& UIData)
@@ -76,9 +71,22 @@ bool USTUPlayerHUDWidget::IsPlayerSpectating() const
     return Controller && Controller->GetStateName() == (NAME_Spectating);
 }
 
+void USTUPlayerHUDWidget::UpdateHealthBar()
+{
+    if(!HealthProgressBar) return;
+    HealthProgressBar->SetPercent(HealthComponent->GetHealthPercent());
+    const auto HealthBarColor = HealthComponent->GetHealthPercent() < HealthBarThreshold ? BadColor : GoodColor;
+    HealthProgressBar->SetFillColorAndOpacity(HealthBarColor);
+}
+
 void USTUPlayerHUDWidget::OnHealthChange(const float Health, const float HealthDelta)
 {
-    if(HealthDelta<0.f) OnTakeDamage();
+    if(HealthDelta<0.f)
+    {
+        OnTakeDamage();
+        PlayAnimation(DamageAnimation);
+    }
+    UpdateHealthBar();
 }
 
 bool USTUPlayerHUDWidget::GetRoundData(FRoundData& RoundData)

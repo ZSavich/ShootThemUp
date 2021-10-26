@@ -19,6 +19,7 @@ void USTUMenuWidget::NativeOnInitialized()
         QuitGameButton->OnClicked.AddDynamic(this, &USTUMenuWidget::OnQuitGame);
     }
     InitLevelItems();
+    Show();
     Super::NativeOnInitialized();
 }
 
@@ -63,8 +64,10 @@ void USTUMenuWidget::OnLevelSelected(const FLevelData& LevelData)
     }
 }
 
-void USTUMenuWidget::OnStartLevel()
+void USTUMenuWidget::OnAnimationFinished_Implementation(const UWidgetAnimation* MovieSceneBlends)
 {
+    if(MovieSceneBlends != HideAnimation) return;
+    
     if(!GetWorld()) return;
     const auto GameInstance = GetWorld()->GetGameInstance<USTUGameInstance>();
     if(!GameInstance || GameInstance->GetStartupLevel().LevelName.IsNone())
@@ -73,6 +76,13 @@ void USTUMenuWidget::OnStartLevel()
         return;
     }
     UGameplayStatics::OpenLevel(GetWorld(),GameInstance->GetStartupLevel().LevelName);
+    
+    Super::OnAnimationFinished_Implementation(MovieSceneBlends);
+}
+
+void USTUMenuWidget::OnStartLevel()
+{
+    PlayAnimation(HideAnimation);
 }
 
 void USTUMenuWidget::OnQuitGame()

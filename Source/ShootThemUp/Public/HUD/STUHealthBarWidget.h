@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "STUBaseWidget.h"
 #include "STUHealthBarWidget.generated.h"
 
 class UProgressBar;
 
 UCLASS()
-class SHOOTTHEMUP_API USTUHealthBarWidget : public UUserWidget
+class SHOOTTHEMUP_API USTUHealthBarWidget : public USTUBaseWidget
 {
 	GENERATED_BODY()
 

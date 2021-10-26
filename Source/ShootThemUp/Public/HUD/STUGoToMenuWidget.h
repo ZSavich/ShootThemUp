@@ -1,13 +1,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "STUBaseWidget.h"
 #include "STUGoToMenuWidget.generated.h"
 
 class UButton;
 
 UCLASS()
-class SHOOTTHEMUP_API USTUGoToMenuWidget : public UUserWidget
+class SHOOTTHEMUP_API USTUGoToMenuWidget : public USTUBaseWidget
 {
 	GENERATED_BODY()
 

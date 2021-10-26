@@ -3,17 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "STUBaseWidget.h"
 #include "STUCoreTypes.h"
-#include "Blueprint/UserWidget.h"
 #include "STUPlayerHUDWidget.generated.h"
 
 class USTUHealthComponent;
 class USTUWeaponComponent;
 class ASTUGameMode;
+class UProgressBar;
 
 
 UCLASS()
-class SHOOTTHEMUP_API USTUPlayerHUDWidget : public UUserWidget
+class SHOOTTHEMUP_API USTUPlayerHUDWidget : public USTUBaseWidget
 {
 	GENERATED_BODY()
 
@@ -31,9 +32,21 @@ protected:
 
     UPROPERTY()
     ASTUGameMode* GameMode;
+
+    UPROPERTY(meta = (BindWidgetAnim), Transient)
+    UWidgetAnimation* DamageAnimation;
+
+    UPROPERTY(meta = (BindWidget))
+    UProgressBar* HealthProgressBar;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HealthBar")
+    float HealthBarThreshold = 0.5f;
     
-    UFUNCTION(BlueprintPure)
-    float GetHealthPercent();
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HealthBar")
+    FLinearColor GoodColor = FLinearColor::Blue;
+    
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HealthBar")
+    FLinearColor BadColor = FLinearColor::Red;
 
     UFUNCTION(BlueprintPure)
     bool GetWeaponUIData(FWeaponUIData& UIData);
@@ -55,6 +68,8 @@ protected:
 
     UFUNCTION(BlueprintImplementableEvent, Category = "UMG")
     void OnTakeDamage();
+
+    void UpdateHealthBar();
 
 private:
     void OnHealthChange(const float Health, const float HealthDelta);
