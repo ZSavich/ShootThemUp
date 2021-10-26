@@ -169,5 +169,22 @@ struct FPlayerStatistic
     int32 DeathsNum = 0;
 };
 
+/** Game Instance **/
 
 
+USTRUCT(BlueprintType)
+struct FLevelData
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditDefaultsOnly, Category = "Level")
+    FName LevelName = NAME_None;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Level")
+    FName LevelDisplayName = NAME_None;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Level")
+    UTexture2D* LevelThumb = nullptr;
+};
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnLevelSelectedSignature, const FLevelData&);
