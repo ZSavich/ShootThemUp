@@ -22,7 +22,7 @@ void USTUGameOverWidget::NativeOnInitialized()
     {
         ResetLevelButton->OnClicked.AddDynamic(this, &USTUGameOverWidget::OnResetLevel);
     }
-    Show();
+    //Show();
     Super::NativeOnInitialized();
 }
 

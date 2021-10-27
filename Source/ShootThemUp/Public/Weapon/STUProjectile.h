@@ -40,6 +40,9 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UPointLightComponent* PointLight;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    UAudioComponent* ProjectileFlyAudio;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ProjectileSettings")
     float DamageAmount;
 

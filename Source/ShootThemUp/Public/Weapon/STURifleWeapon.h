@@ -45,13 +45,16 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "VFX")
     FName TraceTargetName;
+
+    UPROPERTY(VisibleAnywhere, Category = "Components")
+    UAudioComponent* ShootAudioComponent;
     
 private:
     FTimerHandle FireTimer;
     
     void MakeDamage(AActor* const TargetActor);
-    void InitMuzzleFX();
-    void SetMuzzleFXVisible(const bool Visibility) const;
+    void InitFX();
+    void SetFXVisible(const bool isActive) const;
     void SpawnTraceFX(const FVector StartTarget, const FVector EndTarget) const;
     AController* GetController() const;
 };

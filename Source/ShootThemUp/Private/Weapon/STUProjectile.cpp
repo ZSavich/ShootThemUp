@@ -7,6 +7,7 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "STUWeaponFXComponent.h"
+#include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -40,6 +41,9 @@ ASTUProjectile::ASTUProjectile()
     PointLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("Light"));
     PointLight->SetupAttachment(GetRootComponent());
 
+    ProjectileFlyAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("FlyAudio"));
+    ProjectileFlyAudio->SetupAttachment(GetRootComponent());
+
     DamageAmount = 45.f;
     DamageRadius = 100.f;
 }
@@ -50,9 +54,11 @@ void ASTUProjectile::BeginPlay()
     checkf(MovementComponent, TEXT("ASTUProjectile MovementComponent is Not Valid!"));
     checkf(SphereComponent, TEXT("ASTUProjectile SphereComponent is Not Valid!"));
     checkf(WeaponFX, TEXT("ASTUProjectile WeaponFX is Not Valid!"));
+    checkf(ProjectileFlyAudio, TEXT("ASTUProjectile ProjectileFlyComponent is Not Valid!"))
 
     MovementComponent->Velocity = ShotDirection * MovementComponent->InitialSpeed;
     SphereComponent->OnComponentHit.AddDynamic(this, &ASTUProjectile::OnProjectileHit);
+    ProjectileFlyAudio->Activate();
     
     SetLifeSpan(5.f);
 }
@@ -72,6 +78,7 @@ void ASTUProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* 
     WeaponFX->PlayImpactFX(Hit);
     Mesh->DestroyComponent();
     PointLight->DestroyComponent();
+    ProjectileFlyAudio->Deactivate();
     SetLifeSpan(2.f);
 }
 

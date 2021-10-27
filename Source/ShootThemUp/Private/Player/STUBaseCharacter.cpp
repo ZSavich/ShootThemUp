@@ -4,6 +4,8 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/STUWeaponComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
 {
@@ -54,6 +56,8 @@ void ASTUBaseCharacter::OnDeath()
     GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
     SetLifeSpan(LifeSpan);
     WeaponComponent->StopFire();
+    if(!DeathSound) return;
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), DeathSound, GetActorLocation());
 }
 void ASTUBaseCharacter::OnHealthChanged(const float Health, const float HealthDelta)
 {}

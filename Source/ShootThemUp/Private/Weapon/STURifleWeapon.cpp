@@ -3,11 +3,12 @@
 
 #include "Weapon/STURifleWeapon.h"
 #include "GameFramework/Character.h"
-#include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "STUWeaponFXComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
 
 ASTURifleWeapon::ASTURifleWeapon()
 {
@@ -26,13 +27,13 @@ void ASTURifleWeapon::BeginPlay()
 
 void ASTURifleWeapon::StartFire()
 {
-    InitMuzzleFX();
+    InitFX();
     GetWorld()->GetTimerManager().SetTimer(FireTimer, this, &ASTUBaseWeapon::MakeShot, FireRate, true, 0.f);
 }
 
 void ASTURifleWeapon::StopFire()
 {
-    SetMuzzleFXVisible(false);
+    SetFXVisible(false);
     GetWorld()->GetTimerManager().ClearTimer(FireTimer);
 }
 
@@ -85,20 +86,26 @@ void ASTURifleWeapon::MakeDamage(AActor* const TargetActor)
     UGameplayStatics::ApplyDamage(TargetActor,DamageAmount, GetController(),this, UDamageType::StaticClass());
 }
 
-void ASTURifleWeapon::InitMuzzleFX()
+void ASTURifleWeapon::InitFX()
 {
     if(!MuzzleEffectComponent)
-    {
         MuzzleEffectComponent = SpawnMuzzleFX();
-    }
-    SetMuzzleFXVisible(true);
+    if(!ShootAudioComponent)
+        ShootAudioComponent = UGameplayStatics::SpawnSoundAttached(ShootSound, Mesh, MuzzleSocketName,
+            FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget,
+            false,1,1,0,nullptr,nullptr,
+            false);
+            
+    SetFXVisible(true);
 }
 
-void ASTURifleWeapon::SetMuzzleFXVisible(const bool Visibility) const
+void ASTURifleWeapon::SetFXVisible(const bool isActive) const
 {
     if(!MuzzleEffectComponent) return;
-    MuzzleEffectComponent->SetPaused(!Visibility);
-    MuzzleEffectComponent->SetVisibility(Visibility, true);
+    MuzzleEffectComponent->SetPaused(!isActive);
+    MuzzleEffectComponent->SetVisibility(isActive, true);
+    if(!ShootAudioComponent) return;
+    isActive ? ShootAudioComponent->Play() : ShootAudioComponent->Stop();
 }
 
 void ASTURifleWeapon::SpawnTraceFX(const FVector StartTarget, const FVector EndTarget) const

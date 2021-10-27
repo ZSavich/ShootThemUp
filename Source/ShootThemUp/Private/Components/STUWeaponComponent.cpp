@@ -180,7 +180,7 @@ void USTUWeaponComponent::OnClipEmpty(ASTUBaseWeapon* TriggerWeapon)
 void USTUWeaponComponent::Reload()
 {    
     if(!CanReload() || !CurrentWeapon->CanReload()) return;
-    
+    StopFire();
     bReloadAnimInProgress = true;
     PlayAnimMontage(CurrentReloadMontage);
 }

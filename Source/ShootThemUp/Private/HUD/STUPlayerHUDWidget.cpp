@@ -18,6 +18,7 @@ void USTUPlayerHUDWidget::NativeOnInitialized()
     {
         GameMode = Cast<ASTUGameMode>(GetWorld()->GetAuthGameMode());
     }
+    //Show();
     Super::NativeOnInitialized();
 }
 
@@ -30,7 +31,6 @@ void USTUPlayerHUDWidget::BindWidgetsToPlayer()
         HealthComponent->OnHealthChanged.AddUObject(this,&USTUPlayerHUDWidget::OnHealthChange);
         UpdateHealthBar();
     }
-    Show();
 }
 
 bool USTUPlayerHUDWidget::GetWeaponUIData(FWeaponUIData& UIData)

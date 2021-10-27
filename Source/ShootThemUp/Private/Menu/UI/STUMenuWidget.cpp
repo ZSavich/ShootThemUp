@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "STULevelItemWidget.h"
 #include "Components/HorizontalBox.h"
+#include "Sound/SoundCue.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogMenuWidget, All, Log)
 
@@ -19,7 +20,6 @@ void USTUMenuWidget::NativeOnInitialized()
         QuitGameButton->OnClicked.AddDynamic(this, &USTUMenuWidget::OnQuitGame);
     }
     InitLevelItems();
-    Show();
     Super::NativeOnInitialized();
 }
 
@@ -83,6 +83,7 @@ void USTUMenuWidget::OnAnimationFinished_Implementation(const UWidgetAnimation* 
 void USTUMenuWidget::OnStartLevel()
 {
     PlayAnimation(HideAnimation);
+    UGameplayStatics::PlaySound2D(GetWorld(), GameStartSound);
 }
 
 void USTUMenuWidget::OnQuitGame()

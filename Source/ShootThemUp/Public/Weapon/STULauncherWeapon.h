@@ -14,11 +14,13 @@ class SHOOTTHEMUP_API ASTULauncherWeapon : public ASTUBaseWeapon
 	GENERATED_BODY()
 
 public:
-    ASTULauncherWeapon();
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponSettings | Projectile")
     TSubclassOf<ASTUProjectile> ProjectileClass;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sounds")
+    USoundCue* DryFireSound;
+    
     virtual void StartFire() override;
     virtual void MakeShot() override;
 

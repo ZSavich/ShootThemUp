@@ -10,6 +10,7 @@
 class USTUHealthComponent;
 class USTUWeaponComponent;
 class USTUEquipFinishedNotify;
+class USoundCue;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
@@ -28,8 +29,11 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USTUHealthComponent*  HealthComponent;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Conponents")
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USTUWeaponComponent* WeaponComponent;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sounds")
+    USoundCue* DeathSound;
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
     EMovementStatus MovementStatus;
