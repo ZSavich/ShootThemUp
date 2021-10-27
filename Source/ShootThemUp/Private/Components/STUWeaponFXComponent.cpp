@@ -7,6 +7,7 @@
 #include "Components/DecalComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Sound/SoundCue.h"
 
 USTUWeaponFXComponent::USTUWeaponFXComponent()
 {
@@ -36,5 +37,7 @@ void USTUWeaponFXComponent::PlayImpactFX(const FHitResult& HitResult)
     const auto ImpactDecal = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), ImpactData.DecalData.Decal, ImpactData.DecalData.Size,
         HitResult.ImpactPoint, HitResult.ImpactNormal.Rotation(),ImpactData.DecalData.LifeTime);
     ImpactDecal->SetFadeOut(ImpactData.DecalData.LifeTime,ImpactData.DecalData.FadeOutTime);
+
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(),ImpactData.ImpactSound,HitResult.ImpactPoint);
 }
 

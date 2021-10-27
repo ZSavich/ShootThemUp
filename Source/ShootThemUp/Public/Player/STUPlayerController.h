@@ -27,4 +27,5 @@ protected:
 
     void OnPauseGame();
     void OnMatchStateChanged(const EMatchState State);
+    void OnSoundMute();
 };

@@ -3,6 +3,8 @@
 
 #include "Pickup/STUBasePickup.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogPickup, All, Log);
 
@@ -51,6 +53,7 @@ void ASTUBasePickup::Tick(float DeltaSeconds)
 
 void ASTUBasePickup::PickupWasTaken()
 {
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), PickupSound, GetActorLocation());
     SphereCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
     GetRootComponent()->SetVisibility(false, true);
     GenerateRotationYaw();
