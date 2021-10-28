@@ -20,6 +20,9 @@ class SHOOTTHEMUP_API ASTUBaseCharacter : public ACharacter
 public:
 	ASTUBaseCharacter(const FObjectInitializer& ObjectInitializer);
     
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
+    TMap<UPhysicalMaterial*,float> DamageModifier;
+    
     UFUNCTION(BlueprintPure)
     float GetMovementDirection() const;
     

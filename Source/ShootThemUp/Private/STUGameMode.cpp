@@ -14,10 +14,12 @@
 #include "Player/STUPlayerController.h"
 #include "AI/STUAICharacter.h"
 #include "AI/STUAIController.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogGameRound, All, Log);
 
-static const int32 MinRoundTimeForRespawn = 10;
+static const int32 MinRoundTimeForRespawn = 5;
 
 ASTUGameMode::ASTUGameMode()
 {
@@ -117,6 +119,10 @@ void ASTUGameMode::ResetPlayers()
 
 void ASTUGameMode::ResetOnePlayer(AController* Controller)
 {
+    if(Controller->IsPlayerController())
+    {
+        UGameplayStatics::PlaySound2D(GetWorld(), RespawnSound);
+    }
     if(Controller && Controller->GetPawn()) {
         Controller->GetPawn()->Reset();
     }

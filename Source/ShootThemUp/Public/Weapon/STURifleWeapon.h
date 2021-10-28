@@ -23,6 +23,7 @@ public:
     virtual void StopFire() override;
     virtual void MakeShot() override;
     virtual bool GetTraceData(FVector& StartPoint, FVector& EndPoint) const override;
+    virtual void Zoom(const bool State) override;
     
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponSettings")
@@ -52,7 +53,7 @@ protected:
 private:
     FTimerHandle FireTimer;
     
-    void MakeDamage(AActor* const TargetActor);
+    void MakeDamage(const FHitResult& HitResult);
     void InitFX();
     void SetFXVisible(const bool isActive) const;
     void SpawnTraceFX(const FVector StartTarget, const FVector EndTarget) const;

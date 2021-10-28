@@ -37,6 +37,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float SprintSpeed;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Sounds")
+    USoundCue* AmbientDeathSound;
+
     virtual void OnDeath() override;
 private:
     void MoveForward(float Amount);

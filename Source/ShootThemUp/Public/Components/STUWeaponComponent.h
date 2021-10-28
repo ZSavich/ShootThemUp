@@ -25,6 +25,7 @@ public:
     bool GetWeaponUIData(FWeaponUIData& UIData) const;
     bool GetWeaponAmmoData(FAmmoData& AmmoData) const;
     bool TryToAddAmmo(TSubclassOf<ASTUBaseWeapon> WeaponType, const int32 ClipsAmount);
+    void Zoom(const bool bState);
     
 protected:    
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")

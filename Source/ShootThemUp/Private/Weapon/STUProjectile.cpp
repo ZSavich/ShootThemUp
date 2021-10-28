@@ -79,7 +79,7 @@ void ASTUProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* 
     Mesh->DestroyComponent();
     PointLight->DestroyComponent();
     ProjectileFlyAudio->Deactivate();
-    SetLifeSpan(2.f);
+    SetLifeSpan(1.f);
 }
 
 AController* ASTUProjectile::GetController() const

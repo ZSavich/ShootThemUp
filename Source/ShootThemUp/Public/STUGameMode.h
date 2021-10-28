@@ -42,6 +42,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Players")
     TSubclassOf<ASTUAICharacter> AIPawnClass;
     
+    UPROPERTY(EditDefaultsOnly, Category = "Sounds")
+    USoundCue* RespawnSound;
+    
     FTimerHandle GameTimerHandle;
     FRoundData RoundData;
     

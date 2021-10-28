@@ -4,6 +4,7 @@
 #include "Components/ActorComponent.h"
 #include "STURespawnComponent.generated.h"
 
+class USoundCue;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SHOOTTHEMUP_API USTURespawnComponent : public UActorComponent
@@ -19,6 +20,7 @@ public:
     bool IsRespawnInProcess() const;
 
 protected:
+    
     FTimerHandle RespawnTimeHandle;
     int32 RespawnCountDown;
 

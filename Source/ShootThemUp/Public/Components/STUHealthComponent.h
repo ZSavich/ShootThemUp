@@ -55,10 +55,14 @@ private:
     FTimerHandle HealTimer;
     
     UFUNCTION()
-    void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+    void OnTakePointDamage(AActor* DamagedActor, float Damage, class AController* InstigatedBy, FVector HitLocation, class UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, const class UDamageType* DamageType, AActor* DamageCauser);
+    UFUNCTION()
+    void OnTakeRadialDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, FVector Origin, FHitResult HitInfo, class AController* InstigatedBy, AActor* DamageCauser);
 
+    void ApplyDamage(const float Damage, AController* InstigatedBy);
     void HealUpdate();
     void SetHealth(float NewHealth);
     void PlayCameraShake() const;
     void Killed(AController* KillerController) const;
+    float GetPointDamageModifier(const float Damage, const FName BoneName, const AController* InstigatedBy) const;
 };

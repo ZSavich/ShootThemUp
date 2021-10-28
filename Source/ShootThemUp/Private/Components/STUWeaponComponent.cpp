@@ -94,6 +94,7 @@ void USTUWeaponComponent::EquipWeapon(const int32 WeaponIndex)
     if(CurrentWeapon)
     {
         StopFire();
+        Zoom(false);
         AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), SpareWeaponSocketName);
     }
     CurrentWeapon = Weapons[WeaponIndex];
@@ -209,4 +210,9 @@ bool USTUWeaponComponent::TryToAddAmmo(TSubclassOf<ASTUBaseWeapon> WeaponType, c
         }
     }
     return false;
+}
+
+void USTUWeaponComponent::Zoom(const bool bState)
+{
+    CurrentWeapon->Zoom(bState);
 }

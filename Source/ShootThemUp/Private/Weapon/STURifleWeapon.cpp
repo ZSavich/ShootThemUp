@@ -60,7 +60,7 @@ void ASTURifleWeapon::MakeShot()
     if(HitResult.bBlockingHit)
     {
         EndTarget = HitResult.ImpactPoint;
-        MakeDamage(HitResult.GetActor());
+        MakeDamage(HitResult);
         WeaponFX->PlayImpactFX(HitResult);
     }
     DecreaseBullet();
@@ -80,10 +80,24 @@ bool ASTURifleWeapon::GetTraceData(FVector& StartPoint, FVector& EndPoint) const
     return true;
 }
 
-void ASTURifleWeapon::MakeDamage(AActor* const TargetActor)
+void ASTURifleWeapon::Zoom(const bool bState)
 {
-    if(!TargetActor || !TargetActor->IsA<ACharacter>()) return;
-    UGameplayStatics::ApplyDamage(TargetActor,DamageAmount, GetController(),this, UDamageType::StaticClass());
+    const auto Controller = Cast<APlayerController>(GetController());
+    if(!Controller || !Controller->PlayerCameraManager) return;
+    if(bState)
+    {
+        FOVDefaultZoom = Controller->PlayerCameraManager->GetFOVAngle();
+    }
+    
+    Controller->PlayerCameraManager->SetFOV(bState ? FOVZoomAngle : FOVDefaultZoom);
+}
+
+void ASTURifleWeapon::MakeDamage(const FHitResult& HitResult)
+{
+    //UGameplayStatics::ApplyDamage(HitResult.GetActor(),DamageAmount, GetController(),this, UDamageType::StaticClass());
+    UGameplayStatics::ApplyPointDamage(HitResult.GetActor(),DamageAmount,FVector::ZeroVector,
+        HitResult,GetController(),this,UDamageType::StaticClass());
+    
 }
 
 void ASTURifleWeapon::InitFX()

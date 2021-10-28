@@ -22,6 +22,9 @@ ASTUBaseWeapon::ASTUBaseWeapon()
     MuzzleSocketName = "MuzzleProjectileSocket";
     ShotMagnitude = 3000.0f;
     DefaultAmmo= {15,5,false};
+
+    FOVZoomAngle = 50.f;
+    FOVDefaultZoom = 90.f;
 }
 
 void ASTUBaseWeapon::BeginPlay()

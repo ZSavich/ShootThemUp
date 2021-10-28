@@ -25,6 +25,8 @@ public:
     virtual void StopFire(){};
     virtual void MakeShot(){};
     virtual bool GetTraceData(FVector& StartPoint, FVector& EndPoint) const;
+    virtual void Zoom(const bool State) {};
+    
     void ChangeClip();
     bool TryToAddAmmo(const int32 ClipsAmount);
     
@@ -57,6 +59,11 @@ protected:
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sounds")
     USoundCue* ShootSound;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+    float FOVZoomAngle;
+
+    float FOVDefaultZoom;
     
 	virtual void BeginPlay() override;
     

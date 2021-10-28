@@ -1,5 +1,4 @@
 #include "Components/STURespawnComponent.h"
-
 #include "STUGameMode.h"
 
 USTURespawnComponent::USTURespawnComponent()
@@ -25,7 +24,6 @@ void USTURespawnComponent::RespawnTimerUpdate()
         
         const auto GameMode = Cast<ASTUGameMode>(GetWorld()->GetAuthGameMode());
         if(!GameMode) return;
-
         GameMode->RespawnRequest(Cast<AController>(GetOwner()));
     }
 }

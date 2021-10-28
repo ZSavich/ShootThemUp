@@ -3,6 +3,7 @@
 
 #include "STUHealthComponent.h"
 
+#include "STUBaseCharacter.h"
 #include "STUGameMode.h"
 #include "GameFramework/Actor.h"
 
@@ -39,11 +40,26 @@ void USTUHealthComponent::BeginPlay()
     if(OwnerActor)
     {
         OwnerActor->OnTakeAnyDamage.AddDynamic(this, &USTUHealthComponent::OnTakeAnyDamage);
+        OwnerActor->OnTakePointDamage.AddDynamic(this, &USTUHealthComponent::OnTakePointDamage);
+        OwnerActor->OnTakeRadialDamage.AddDynamic(this, &USTUHealthComponent::OnTakeRadialDamage);
     }
 }
 
-void USTUHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
-    AController* InstigatedBy, AActor* DamageCauser)
+void USTUHealthComponent::OnTakePointDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation,
+    UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, const UDamageType* DamageType, AActor* DamageCauser)
+{
+    const auto ModifiedDamage = Damage * GetPointDamageModifier(Damage,BoneName,InstigatedBy);
+    
+    ApplyDamage(ModifiedDamage, InstigatedBy);
+}
+
+void USTUHealthComponent::OnTakeRadialDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, FVector Origin,
+    FHitResult HitInfo, AController* InstigatedBy, AActor* DamageCauser)
+{
+    ApplyDamage(Damage, InstigatedBy);
+}
+
+void USTUHealthComponent::ApplyDamage(const float Damage, AController* InstigatedBy)
 {
     if(Damage <= 0.f || IsDeath() || !GetWorld()) return;
     
@@ -62,6 +78,20 @@ void USTUHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, co
         GetWorld()->GetTimerManager().SetTimer(HealTimer, this,&USTUHealthComponent::HealUpdate,
           HealUpdateTime,true, HealDelay);  
     }
+}
+
+float USTUHealthComponent::GetPointDamageModifier(const float Damage, const FName BoneName, const AController* InstigatedBy) const
+{
+    const auto Instigator = Cast<ASTUBaseCharacter>(InstigatedBy->GetPawn());
+    if(!Instigator) return 1.0;
+    
+    const auto BaseCharacter = GetOwner<ASTUBaseCharacter>();
+    if(!BaseCharacter || BaseCharacter->DamageModifier.IsEmpty()) return 1.0;
+    
+    const auto PhysMaterial = BaseCharacter->GetMesh()->GetBodyInstance(BoneName)->GetSimplePhysicalMaterial();
+    if(!PhysMaterial && !BaseCharacter->DamageModifier.Contains(PhysMaterial)) return 1.0;
+    
+    return BaseCharacter->DamageModifier[PhysMaterial];
 }
 
 void USTUHealthComponent::HealUpdate()

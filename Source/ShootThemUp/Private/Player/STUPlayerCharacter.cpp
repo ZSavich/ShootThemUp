@@ -6,6 +6,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 ASTUPlayerCharacter::ASTUPlayerCharacter(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
 {
@@ -52,6 +54,10 @@ void ASTUPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
     PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &USTUWeaponComponent::StopFire);
     PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &USTUWeaponComponent::NextWeapon);
     PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &USTUWeaponComponent::Reload);
+
+    DECLARE_DELEGATE_OneParam(FZoomInputSignature, bool)
+    PlayerInputComponent->BindAction<FZoomInputSignature>("Zoom", IE_Pressed, WeaponComponent, &USTUWeaponComponent::Zoom, true);
+    PlayerInputComponent->BindAction<FZoomInputSignature>("Zoom", IE_Released, WeaponComponent, &USTUWeaponComponent::Zoom, false);
 }
 
 void ASTUPlayerCharacter::MoveForward(float Amount)
@@ -126,5 +132,10 @@ void ASTUPlayerCharacter::CheckCameraOverlap() const
 void ASTUPlayerCharacter::OnDeath()
 {
     Super::OnDeath();
-    if(Controller) GetController()->ChangeState(NAME_Spectating);
+    if(Controller)
+    {
+        GetController()->ChangeState(NAME_Spectating);
+        if(WeaponComponent) WeaponComponent->Zoom(false);
+    }
+    UGameplayStatics::PlaySound2D(GetWorld(), AmbientDeathSound);
 }
