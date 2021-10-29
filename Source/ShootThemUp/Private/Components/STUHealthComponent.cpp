@@ -6,6 +6,7 @@
 #include "STUBaseCharacter.h"
 #include "STUGameMode.h"
 #include "GameFramework/Actor.h"
+#include "Perception/AISense_Damage.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComp, All, Log);
 
@@ -39,7 +40,6 @@ void USTUHealthComponent::BeginPlay()
     AActor* OwnerActor = GetOwner();
     if(OwnerActor)
     {
-        OwnerActor->OnTakeAnyDamage.AddDynamic(this, &USTUHealthComponent::OnTakeAnyDamage);
         OwnerActor->OnTakePointDamage.AddDynamic(this, &USTUHealthComponent::OnTakePointDamage);
         OwnerActor->OnTakeRadialDamage.AddDynamic(this, &USTUHealthComponent::OnTakeRadialDamage);
     }
@@ -78,6 +78,7 @@ void USTUHealthComponent::ApplyDamage(const float Damage, AController* Instigate
         GetWorld()->GetTimerManager().SetTimer(HealTimer, this,&USTUHealthComponent::HealUpdate,
           HealUpdateTime,true, HealDelay);  
     }
+    ReportDamageEvent(Damage,InstigatedBy);
 }
 
 float USTUHealthComponent::GetPointDamageModifier(const float Damage, const FName BoneName, const AController* InstigatedBy) const
@@ -92,6 +93,17 @@ float USTUHealthComponent::GetPointDamageModifier(const float Damage, const FNam
     if(!PhysMaterial && !BaseCharacter->DamageModifier.Contains(PhysMaterial)) return 1.0;
     
     return BaseCharacter->DamageModifier[PhysMaterial];
+}
+
+void USTUHealthComponent::ReportDamageEvent(const float Damage, const AController* InstigatedBy) const
+{
+    if(!InstigatedBy || !InstigatedBy->GetPawn()) return;
+    UAISense_Damage::ReportDamageEvent(GetWorld(),
+        GetOwner(),
+        InstigatedBy->GetPawn(),
+        Damage,
+        InstigatedBy->GetPawn()->GetActorLocation(),
+        GetOwner()->GetActorLocation());
 }
 
 void USTUHealthComponent::HealUpdate()

@@ -5,13 +5,19 @@
 
 #include "STUHealthComponent.h"
 #include "STUUtils.h"
+#include "Perception/AISense_Damage.h"
 #include "Perception/AISense_Sight.h"
+
 
 APawn* USTUAIPerceptionComponent::GetClosestPawn() const
 {
     TArray<AActor*> PerceivedActors;
     GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), PerceivedActors);
-    if(!PerceivedActors.Num()) return nullptr;
+    if(PerceivedActors.Num() == 0)
+    {
+        GetCurrentlyPerceivedActors(UAISense_Damage::StaticClass(), PerceivedActors);
+        if(PerceivedActors.Num() == 0 ) return nullptr;
+    }
 
     float ClosestDistance = MAX_FLT;
     APawn* ClosestPawn = nullptr;

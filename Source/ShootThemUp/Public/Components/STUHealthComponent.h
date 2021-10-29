@@ -65,4 +65,5 @@ private:
     void PlayCameraShake() const;
     void Killed(AController* KillerController) const;
     float GetPointDamageModifier(const float Damage, const FName BoneName, const AController* InstigatedBy) const;
+    void ReportDamageEvent(const float Damage, const AController* InstigatedBy) const;
 };
